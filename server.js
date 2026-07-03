@@ -1280,7 +1280,46 @@ app.get("/api/products/:id", async (req, res) => {
   }
 });
 
+// ================= ALL PRODUCTS =================
+app.get("/api/products/all", async (req, res) => {
+  try {
 
+    const products = await Product.find()
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      products
+    });
+
+  } catch (err) {
+    console.error("All Products Error:", err);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to load products"
+    });
+  }
+});
+// ================= ALL CATEGORIES =================
+app.get("/api/categories", async (req, res) => {
+  try {
+
+    const categories = await Product.distinct("category");
+
+    res.json({
+      success: true,
+      categories
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+});
 
 // UPDATE PRODUCT
 // ✅ UPDATE PRODUCT (FINAL – MULTIPLE IMAGE SUPPORT)
