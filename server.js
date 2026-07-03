@@ -959,85 +959,27 @@ app.post("/api/admin/unlock-location/:uid", async (req,res)=>{
 /* ================= NEAREST WHOLESALER ================= */
 /* ================= NEAREST WHOLESALER ================= */
 
-app.post("/api/wholesalers/nearest", async (req, res) => {
-  try {
+app.get("/api/products/category/:category", async (req, res) => {
 
-    const { location } = req.body;
+    try{
 
-    if (
-      !location ||
-      location.lat === undefined ||
-      location.lng === undefined
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Retailer location missing"
-      });
-    }
+        const products = await Product.find({
+            category: req.params.category
+        }).sort({createdAt:-1});
 
-    const retailerLocation = {
-      lat: Number(location.lat),
-      lng: Number(location.lng)
-    };
-
-    console.log("📍 Retailer Location:", retailerLocation);
-
-    const wholesalers = await User.find({
-      role: "wholesaler"
-    });
-
-    console.log("👤 Total Wholesalers:", wholesalers.length);
-
-    const nearbyWholesalers = [];
-
-    for (const w of wholesalers) {
-
-      if (
-        !w.location ||
-        w.location.lat == null ||
-        w.location.lng == null
-      ) {
-        continue;
-      }
-
-      const distance = getDistanceKm(
-        retailerLocation.lat,
-        retailerLocation.lng,
-        Number(w.location.lat),
-        Number(w.location.lng)
-      );
-
-      console.log(`${w.name} -> ${distance.toFixed(2)} KM`);
-
-      if (distance <= 20) {
-        nearbyWholesalers.push({
-          _id: w._id,
-          name: w.name,
-          mobile: w.mobile,
-          distance: Number(distance.toFixed(2))
+        res.json({
+            success:true,
+            products
         });
-      }
+
+    }catch(err){
+
+        res.status(500).json({
+            success:false
+        });
+
     }
 
-    nearbyWholesalers.sort((a, b) => a.distance - b.distance);
-
-    console.log("✅ Nearby Wholesalers:", nearbyWholesalers.length);
-
-    return res.json({
-      success: true,
-      wholesalers: nearbyWholesalers
-    });
-
-  } catch (err) {
-
-    console.error("Nearest API Error:", err);
-
-    return res.status(500).json({
-      success: false,
-      message: err.message
-    });
-
-  }
 });
 
 /* ===================== DISTANCE FUNCTION ===================== */
