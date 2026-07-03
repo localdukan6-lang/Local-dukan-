@@ -1129,7 +1129,27 @@ app.get("/api/cart/:retailerId", (req,res)=>{
   res.json({ items: carts[req.params.retailerId] || [] });
 });
 
+// ================= ALL PRODUCTS =================
+app.get("/api/products/all", async (req, res) => {
+  try {
 
+    const products = await Product.find()
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      products
+    });
+
+  } catch (err) {
+    console.error("All Products Error:", err);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to load products"
+    });
+  }
+});
 
 
 app.get("/api/products/by-category/:category", async (req, res) => {
@@ -1280,27 +1300,7 @@ app.get("/api/products/:id", async (req, res) => {
   }
 });
 
-// ================= ALL PRODUCTS =================
-app.get("/api/products/all", async (req, res) => {
-  try {
 
-    const products = await Product.find()
-      .sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      products
-    });
-
-  } catch (err) {
-    console.error("All Products Error:", err);
-
-    res.status(500).json({
-      success: false,
-      message: "Failed to load products"
-    });
-  }
-});
 // ================= ALL CATEGORIES =================
 app.get("/api/categories", async (req, res) => {
   try {
