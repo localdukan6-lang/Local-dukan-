@@ -1489,108 +1489,42 @@ async function ensureRetailerLocation() {
 // ------------------- PRODUCTS -------------------
 async function loadProducts() {
 
-  let wid = document.getElementById("wid").value.trim();
-
   try {
 
-    let allProducts = [];
+    const res = await fetch(`${API}/api/products/all`);
+    const data = await res.json();
 
-    // ✅ CASE 1: No manual wid → nearest wholesalers
-    if (!wid) {
-
-      const retailerLoc = await ensureRetailerLocation();
-
-      if (!retailerLoc) {
-        alert("📍 Please set your location first.");
-        return;
-      }
-
-      const nearRes = await fetch(`${API}/api/wholesalers/nearest`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          location: {
-            lat: retailerLoc.lat,
-            lng: retailerLoc.lng
-          }
-        })
-      });
-
-      const nearData = await nearRes.json();
-
-      if (
-        !nearData.success ||
-        !nearData.wholesalers ||
-        nearData.wholesalers.length === 0
-      ) {
-        document.getElementById("categories").innerHTML =
-          "<p>No wholesaler found</p>";
-        return;
-      }
-
-      // ✅ Merge products of all nearby wholesalers
-      for (const w of nearData.wholesalers) {
-
-        const res = await fetch(
-          `${API}/api/products/wholesaler/${w._id}`
-        );
-
-        const data = await res.json();
-
-        if (data.success && data.products) {
-          allProducts.push(...data.products);
-        }
-      }
-
-      // ✅ Save all nearby products
-      sessionStorage.setItem(
-        "nearbyProducts",
-        JSON.stringify(allProducts)
-      );
-
-    }
-
-    // ✅ CASE 2: Manual Wholesaler ID
-    else {
-
-      if (
-        currentWholesalerId &&
-        currentWholesalerId !== wid
-      ) {
-        clearCartCompletely();
-      }
-
-      currentWholesalerId = wid;
-
-      const res = await fetch(
-        `${API}/api/products/wholesaler/${wid}`
-      );
-
-      const data = await res.json();
-
-      if (data.success && data.products) {
-        allProducts = data.products;
-      }
-
-      // ✅ Save manual wholesaler products also
-      sessionStorage.setItem(
-        "nearbyProducts",
-        JSON.stringify(allProducts)
-      );
-    }
-
-    const categoriesContainer =
-      document.getElementById("categories");
-
-    if (!allProducts.length) {
-      categoriesContainer.innerHTML =
+    if (!data.success) {
+      document.getElementById("categories").innerHTML =
         "<p>No Products Found</p>";
       return;
     }
 
-    // ✅ Build Categories
+    const allProducts = data.products || [];
+
+    // Save products for category page
+    sessionStorage.setItem(
+      "nearbyProducts",
+      JSON.stringify(allProducts)
+    );
+
+    const categoriesContainer =
+      document.getElementById("categories");
+
+    const productsContainer =
+      document.getElementById("products");
+
+    if (!allProducts.length) {
+      categoriesContainer.innerHTML =
+        "<p>No Products Found</p>";
+
+      if (productsContainer)
+        productsContainer.innerHTML = "";
+
+      return;
+    }
+
+    // ===== Categories =====
     const categoryMap = {};
 
     allProducts.forEach(p => {
@@ -1601,7 +1535,6 @@ async function loadProducts() {
       }
     });
 
-    // ✅ Render Categories
     categoriesContainer.innerHTML = Object.keys(categoryMap)
       .map(cat => `
         <div class="category-card"
@@ -1619,28 +1552,47 @@ async function loadProducts() {
       `)
       .join("");
 
-    sessionStorage.setItem(
-      "lastCategoriesHTML",
-      categoriesContainer.innerHTML
-    );
+    // ===== All Products =====
+    if (productsContainer) {
+
+      productsContainer.innerHTML = allProducts.map(p => {
+
+        const pdata = encodeURIComponent(JSON.stringify(p));
+
+        return `
+          <div class="product-card">
+
+            <img src="${p.images?.[0] || ''}">
+
+            <div>${p.productName}</div>
+
+            <div class="price">
+              ₹${p.price}
+            </div>
+
+            <button
+              onclick='openDetail(JSON.parse(decodeURIComponent("${pdata}")))'>
+              View
+            </button>
+
+          </div>
+        `;
+
+      }).join("");
+
+    }
 
   } catch (err) {
 
-    console.error("Load Products Error:", err);
+    console.error(err);
+
     alert("Failed to load products");
 
   }
+
 }
 
-window.addEventListener("load", async () => {
-
-  await ensureRetailerLocation();
-
-  if (!document.getElementById("wid").value.trim()) {
-    loadProducts();
-  }
-
-});
+window.addEventListener("load", loadProducts);
 window.addEventListener("load", async () => {
 
   const retailerId = localStorage.getItem("userId");
