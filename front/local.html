@@ -1632,40 +1632,27 @@ window.addEventListener("load", async () => {
 });
     let allProducts = [];
 
-function searchProducts() {
+function searchProducts(){
 
-    const keyword = document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
+    const keyword = document.getElementById("searchInput")
+        .value.toLowerCase().trim();
 
-    if (keyword === "") {
-        renderProducts(allProducts);
+    if(keyword===""){
+        renderAllProducts(allProducts);
         return;
     }
 
-    const filtered = allProducts.filter(p =>
+    const filtered = allProducts.filter(p=>
 
-        (p.productName || "")
-            .toLowerCase()
-            .includes(keyword)
+        (p.productName || "").toLowerCase().includes(keyword) ||
 
-        ||
+        (p.category || "").toLowerCase().includes(keyword) ||
 
-        (p.category || "")
-            .toLowerCase()
-            .includes(keyword)
-
-        ||
-
-        (p.shopName || "")
-            .toLowerCase()
-            .includes(keyword)
+        (p.shopName || "").toLowerCase().includes(keyword)
 
     );
 
-    renderProducts(filtered);
+    renderAllProducts(filtered);
 }
 /* ================= OPEN CATEGORY ================= */
 function openCategory(cat){
