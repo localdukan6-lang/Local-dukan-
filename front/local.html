@@ -1162,10 +1162,16 @@
         </div>
 
         <!-- Search Section -->
-        <div class="search-section">
-            <input id="wid" class="search-input" placeholder="Enter Wholesaler ID">
-            <button class="search-btn" onclick="loadProducts()">Search Products</button>
-        </div>
+<div class="search-section">
+
+    <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="🔍 Search Products, Category, Shop..."
+        onkeyup="searchProducts()">
+
+</div>
 
         <!-- Categories -->
         <div class="category-section">
@@ -1463,18 +1469,16 @@ async function loadProducts() {
   try {
 
     const res = await fetch(`${API}/api/products/all`);
-    const data = await res.json();
+const data = await res.json();
 
-    if (!data.success) {
-      document.getElementById("categories").innerHTML =
+if (!data.success) {
+    document.getElementById("categories").innerHTML =
         "<p>No Products Found</p>";
+    return;
+}
 
-      document.getElementById("allProducts").innerHTML = "";
-
-      return;
-    }
-
-    const allProducts = data.products || [];
+// 👇 Global variable में save
+allProducts = data.products || [];
 
     // Save products for category page
     sessionStorage.setItem(
@@ -1619,6 +1623,43 @@ window.addEventListener("load", async () => {
     console.error("❌ Retailer load error", err);
   }
 });
+    let allProducts = [];
+
+function searchProducts() {
+
+    const keyword = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    if (keyword === "") {
+        renderProducts(allProducts);
+        return;
+    }
+
+    const filtered = allProducts.filter(p =>
+
+        (p.productName || "")
+            .toLowerCase()
+            .includes(keyword)
+
+        ||
+
+        (p.category || "")
+            .toLowerCase()
+            .includes(keyword)
+
+        ||
+
+        (p.shopName || "")
+            .toLowerCase()
+            .includes(keyword)
+
+    );
+
+    renderProducts(filtered);
+}
 /* ================= OPEN CATEGORY ================= */
 function openCategory(cat){
 
