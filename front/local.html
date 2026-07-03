@@ -1533,7 +1533,7 @@ allProducts = data.products || [];
 
     // ================= All Products =================
 
-    renderAllProducts(allProducts);
+    renderAllProducts(allProducts.slice(0, 20));
 
   }
 
@@ -1560,27 +1560,29 @@ function renderAllProducts(products){
 
     container.innerHTML = products.map(p => {
 
-        const pdata = encodeURIComponent(JSON.stringify(p));
-
         return `
         <div class="product-card">
 
-            <img src="${p.images?.[0] || ''}" onclick='openDetail(JSON.parse(decodeURIComponent("${pdata}")))'>
+            <img src="${p.images?.[0] || ''}"
+                 onclick="openProduct('${p._id}')">
 
-
-            <h4>${p.productName}</h4>
+            <h4 onclick="openProduct('${p._id}')">
+                ${p.productName}
+            </h4>
 
             <small>${p.category || ""}</small>
 
-            <div class="price">₹${p.price}</div>
+            <div class="price">
+                ₹${p.price}
+            </div>
 
             <div class="actions">
 
-                <button onclick='openDetail(JSON.parse(decodeURIComponent("${pdata}")))'>
-                    View
+                <button onclick="openProduct('${p._id}')">
+                    👁 View
                 </button>
 
-                <button onclick='addToCart(JSON.parse(decodeURIComponent("${pdata}")))'>
+                <button onclick='addToCart(${JSON.stringify(p)})'>
                     🛒 Cart
                 </button>
 
@@ -1590,6 +1592,9 @@ function renderAllProducts(products){
         `;
 
     }).join("");
+}
+function openProduct(id){
+    window.location.href = `product.html?id=${id}`;
 }
 window.addEventListener("load", async () => {
 
@@ -1637,18 +1642,16 @@ function searchProducts(){
     const keyword = document.getElementById("searchInput")
         .value.toLowerCase().trim();
 
-    if(keyword===""){
-        renderAllProducts(allProducts);
+    if(keyword==""){
+        renderAllProducts(allProducts.slice(0,20));
         return;
     }
 
     const filtered = allProducts.filter(p=>
 
-        (p.productName || "").toLowerCase().includes(keyword) ||
+        (p.productName||"").toLowerCase().includes(keyword) ||
 
-        (p.category || "").toLowerCase().includes(keyword) ||
-
-        (p.shopName || "").toLowerCase().includes(keyword)
+        (p.category||"").toLowerCase().includes(keyword)
 
     );
 
