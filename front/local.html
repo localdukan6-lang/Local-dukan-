@@ -1549,7 +1549,6 @@ allProducts = data.products || [];
 
 window.addEventListener("load", loadProducts);
 
-window.addEventListener("load", loadProducts);
 function renderAllProducts(products){
 
     const container = document.getElementById("allProducts");
@@ -1564,25 +1563,33 @@ function renderAllProducts(products){
         const pdata = encodeURIComponent(JSON.stringify(p));
 
         return `
-
         <div class="product-card">
 
-            <img src="${p.images?.[0] || ''}">
+            <img src="${p.images?.[0] || ''}" onclick='openDetail(JSON.parse(decodeURIComponent("${pdata}")))'>
+
 
             <h4>${p.productName}</h4>
 
-            <div>₹${p.price}</div>
+            <small>${p.category || ""}</small>
 
-            <button onclick='openDetail(JSON.parse(decodeURIComponent("${pdata}")))'>
-                View
-            </button>
+            <div class="price">₹${p.price}</div>
+
+            <div class="actions">
+
+                <button onclick='openDetail(JSON.parse(decodeURIComponent("${pdata}")))'>
+                    View
+                </button>
+
+                <button onclick='addToCart(JSON.parse(decodeURIComponent("${pdata}")))'>
+                    🛒 Cart
+                </button>
+
+            </div>
 
         </div>
-
         `;
 
     }).join("");
-
 }
 window.addEventListener("load", async () => {
 
