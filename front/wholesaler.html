@@ -349,7 +349,7 @@ socket.on("orderAssigned", ({ orderId, deliveryBoyId }) => {
   loadOrders(); // wholesaler order auto refresh
 });
 function openProduct() {
-    
+    loadCategoriesSelect();
     productModal.style.display = "flex";
 }
 
@@ -836,19 +836,7 @@ const ALL_CATEGORIES = [
 // Load Categories in Select
 // ==========================
 function loadCategoriesSelect() {
-
-  const select = document.getElementById("pcategorySelect");
-
-  if(!select) return;
-
-  select.innerHTML = '<option value="">Select Category</option>';
-
-  ALL_CATEGORIES.forEach(cat => {
-    const option = document.createElement("option");
-    option.value = cat;
-    option.textContent = cat;
-    select.appendChild(option);
-  });
+    alert("Function Called");
 }
 
 // ==========================
