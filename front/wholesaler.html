@@ -848,34 +848,30 @@ const ALL_CATEGORIES = [
 // ==========================
 function loadCategoriesSelect() {
 
-    alert("1. Function Called");
+    alert("1");
 
     const select = document.getElementById("pcategorySelect");
 
-    if (!select) {
-        alert("2. Select NOT Found");
-        return;
-    }
+    alert("2");
 
-    alert("2. Select Found");
+    alert("typeof = " + typeof ALL_CATEGORIES);
 
-    if (typeof ALL_CATEGORIES === "undefined") {
-        alert("3. ALL_CATEGORIES is Undefined");
-        return;
-    }
-
-    alert("3. Categories Count = " + ALL_CATEGORIES.length);
+    alert("3");
 
     select.innerHTML = '<option value="">Select Category</option>';
 
-    ALL_CATEGORIES.forEach(function(cat) {
-        const option = document.createElement("option");
-        option.value = cat;
-        option.textContent = cat;
-        select.appendChild(option);
-    });
+    alert("4");
 
-    alert("4. Dropdown Filled");
+    for (let i = 0; i < ALL_CATEGORIES.length; i++) {
+        alert("Adding: " + ALL_CATEGORIES[i]);
+
+        const option = document.createElement("option");
+        option.value = ALL_CATEGORIES[i];
+        option.textContent = ALL_CATEGORIES[i];
+        select.appendChild(option);
+    }
+
+    alert("Done");
 }
   function openProduct() {
     loadCategoriesSelect();
