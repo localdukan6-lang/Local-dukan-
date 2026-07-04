@@ -836,7 +836,27 @@ const ALL_CATEGORIES = [
 // Load Categories in Select
 // ==========================
 function loadCategoriesSelect() {
-    alert("Function Called");
+
+    alert("1");
+
+    const select = document.getElementById("pcategorySelect");
+
+    alert("2");
+
+    select.innerHTML = '<option value="">Select Category</option>';
+
+    alert("3");
+
+    alert(ALL_CATEGORIES.length);
+
+    ALL_CATEGORIES.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+    });
+
+    alert("4");
 }
 
 // ==========================
