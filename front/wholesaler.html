@@ -818,7 +818,7 @@ async function updateProduct() {
  
 function loadCategoriesSelect() {
 
-    alert("1");
+    
 
     const select = document.getElementById("pcategorySelect");
 
@@ -827,10 +827,10 @@ function loadCategoriesSelect() {
         return;
     }
 
-    alert("2");
+    
 
     try {
-        alert("3");
+        
 
         select.innerHTML = `
             <option value="">Select Category</option>
@@ -855,7 +855,7 @@ function loadCategoriesSelect() {
             <option value="Other">Other</option>
         `;
 
-        alert("Done");
+        
 
     } catch (e) {
         alert(e.message);
