@@ -1548,33 +1548,75 @@ function renderAllProducts(products){
         return;
     }
 
-    container.innerHTML = products.map(p => {
+    container.innerHTML = products.map(p=>{
+
+        const img = p.images?.[0] || "https://via.placeholder.com/300";
+        const price = Number(p.price || 0);
+        const oldPrice = Math.round(price * 1.35);
+        const discount = Math.round(((oldPrice-price)/oldPrice)*100);
 
         return `
         <div class="product-card">
 
-            <img src="${p.images?.[0] || ''}"
-                 onclick="openProduct('${p._id}')">
+            <div class="product-image-wrapper">
 
-            <h4 onclick="openProduct('${p._id}')">
-                ${p.productName}
-            </h4>
+                <img src="${img}"
+                     class="product-image"
+                     onclick="openProduct('${p._id}')">
 
-            <small>${p.category || ""}</small>
+                <div class="product-badge">
+                    ${discount}% OFF
+                </div>
 
-            <div class="price">
-                ₹${p.price}
+                <button class="wishlist-icon">
+                    <i class="bi bi-heart-fill"></i>
+                </button>
+
             </div>
 
-            <div class="actions">
+            <div class="product-info">
 
-                <button onclick="openProduct('${p._id}')">
-                    👁 View
-                </button>
+                <div class="product-title"
+                     onclick="openProduct('${p._id}')">
+                    ${p.productName}
+                </div>
 
-                <button onclick='addToCart(${JSON.stringify(p)})'>
-                    🛒 Cart
-                </button>
+                <div class="product-rating">
+                    ⭐ 4.5
+                    <span class="rating-count">(125)</span>
+                </div>
+
+                <small style="color:#6b7280;">
+                    ${p.category || "General"}
+                </small>
+
+                <div class="product-price">
+                    <span class="price-current">
+                        ₹${price}
+                    </span>
+
+                    <span class="price-original">
+                        ₹${oldPrice}
+                    </span>
+
+                    <span class="price-discount">
+                        ${discount}% OFF
+                    </span>
+                </div>
+
+                <div class="product-buttons">
+
+                    <button class="btn-small btn-cart"
+                        onclick="openProduct('${p._id}')">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+
+                    <button class="btn-small btn-buy"
+                        onclick='addToCart(${JSON.stringify(p)})'>
+                        <i class="bi bi-cart-fill"></i>
+                    </button>
+
+                </div>
 
             </div>
 
