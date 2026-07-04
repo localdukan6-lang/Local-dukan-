@@ -851,28 +851,29 @@ const ALL_CATEGORIES = [
 // Load Categories in Select
 // ==========================
 function loadCategoriesSelect() {
-
-    alert("1");
-
+  try {
     const select = document.getElementById("pcategorySelect");
-
-    alert("2");
 
     select.innerHTML = '<option value="">Select Category</option>';
 
     alert("3");
 
     alert(typeof ALL_CATEGORIES);
+
     ALL_CATEGORIES.forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat;
-        option.textContent = cat;
-        select.appendChild(option);
+      const option = document.createElement("option");
+      option.value = cat;
+      option.textContent = cat;
+      select.appendChild(option);
     });
 
-    alert("4");
-}
+    alert("Done");
 
+  } catch (e) {
+    alert(e.message);
+    console.error(e);
+  }
+}
 // ==========================
 // Add Product (FINAL FIXED)
 // ==========================
