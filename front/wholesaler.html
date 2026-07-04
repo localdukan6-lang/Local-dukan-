@@ -847,34 +847,22 @@ const ALL_CATEGORIES = [
 // Load Categories in Select
 // ==========================
 function loadCategoriesSelect() {
-  try {
     const select = document.getElementById("pcategorySelect");
+
+    if (!select) {
+        alert("Select not found");
+        return;
+    }
 
     select.innerHTML = '<option value="">Select Category</option>';
 
-    alert("3");
-
-    alert(typeof ALL_CATEGORIES);
-
     ALL_CATEGORIES.forEach(cat => {
-      const option = document.createElement("option");
-      option.value = cat;
-      option.textContent = cat;
-      select.appendChild(option);
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
     });
-
-    alert("Done");
-
-  } catch (e) {
-    alert(e.message);
-    console.error(e);
-  }
 }
-  function openProduct() {
-    loadCategoriesSelect();
-    productModal.style.display = "flex";
-  }
-  
 // ==========================
 // Add Product (FINAL FIXED)
 // ==========================
