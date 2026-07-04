@@ -348,10 +348,6 @@ socket.on("orderAssigned", ({ orderId, deliveryBoyId }) => {
   console.log("Order assigned:", orderId, deliveryBoyId);
   loadOrders(); // wholesaler order auto refresh
 });
-function openProduct() {
-    loadCategoriesSelect();
-    productModal.style.display = "flex";
-}
 
 function openOrders(){orderModal.style.display="flex";loadOrders();}
 function formatDateTime(ts) {
@@ -874,6 +870,11 @@ function loadCategoriesSelect() {
     console.error(e);
   }
 }
+  function openProduct() {
+    loadCategoriesSelect();
+    productModal.style.display = "flex";
+  }
+  
 // ==========================
 // Add Product (FINAL FIXED)
 // ==========================
