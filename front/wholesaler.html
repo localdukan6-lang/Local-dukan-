@@ -827,11 +827,26 @@ async function updateProduct() {
 // Fixed Categories
 // ==========================
 const ALL_CATEGORIES = [
-  "Shoes","Slippers","Sandals","T-Shirts","Shirts","Jeans","Trousers",
-  "Ladies Wear","Kids Wear","Electronics","Mobile","Grocery","Cosmetics",
-  "Bags","Watches","Sports","Stationery","Home Appliances","Other"
+  "Shoes",
+  "Slippers",
+  "Sandals",
+  "T-Shirts",
+  "Shirts",
+  "Jeans",
+  "Trousers",
+  "Ladies Wear",
+  "Kids Wear",
+  "Electronics",
+  "Mobile",
+  "Grocery",
+  "Cosmetics",
+  "Bags",
+  "Watches",
+  "Sports",
+  "Stationery",
+  "Home Appliances",
+  "Other"
 ];
-
 // ==========================
 // Load Categories in Select
 // ==========================
@@ -847,8 +862,7 @@ function loadCategoriesSelect() {
 
     alert("3");
 
-    alert(ALL_CATEGORIES.length);
-
+    alert(typeof ALL_CATEGORIES);
     ALL_CATEGORIES.forEach(cat => {
         const option = document.createElement("option");
         option.value = cat;
