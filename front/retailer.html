@@ -3384,17 +3384,6 @@ setInterval(async () => {
 
 }, 8000);
 
-window.onload = async function(){
-
-    document.getElementById("pageLoader").style.display="block";
-
-    await loadProducts();
-
-    await loadProfile();
-
-    document.getElementById("pageLoader").style.display="none";
-
-          }
 /* ================= CLOSE ALL MODALS ================= */
 function closeAll() {
   document.querySelectorAll(".modal").forEach(m => {
