@@ -1093,25 +1093,30 @@ function closeChargeModal() {
      }
  
                     /* CONFIRM ORDER WITH VEHICLE TYPE */
-async function confirmOrder(id){
-const vehicle = prompt("Enter Vehicle Type: two_wheeler / three_wheeler / four_wheeler");
-if(!vehicle) return alert("Vehicle type required");
+async function confirmOrder(id) {
+  const vehicle = prompt("Enter Vehicle Type: two_wheeler / three_wheeler / four_wheeler");
+  if (!vehicle) return alert("Vehicle type required");
 
-const res = await fetch(API+"/api/orders/"+id+"/confirm",{
-method:"POST",
-headers:{"Content-Type":"application/json","Authorization":"Bearer "+TOKEN},
-body:JSON.stringify({vehicle})
-});
-const data = await res.json();
-if(data.success){
-alert("Order confirmed ✅");
-loadOrders();
+  const res = await fetch(API + "/api/orders/" + id + "/confirm", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + TOKEN
+    },
+    body: JSON.stringify({ vehicle })
+  });
 
-// Notify delivery boy
-if (socket) {
-    socket.emit("newOrder", { orderId: id, vehicle });
-}
+  const data = await res.json();
 
+  if (data.success) {
+    alert("Order confirmed ✅");
+    loadOrders();
+
+    if (socket) {
+      socket.emit("newOrder", { orderId: id, vehicle });
+    }
+  }
+}  
 /* LOAD ORDERS */
 /* LOAD ORDERS (UPDATED LOGIC) */
 async function loadOrders(){
