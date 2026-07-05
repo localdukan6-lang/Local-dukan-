@@ -1154,35 +1154,22 @@ const Category = mongoose.model("Category", categorySchema);
 /* ================= PRODUCTS ================= */
 /* ================= PRODUCTS ================= */
 app.post("/api/products", async (req, res) => {
-  try {
+try {
+let { category } = req.body;
 
-    let { category } = req.body;
+if (!category) category = "other";  
 
-    if (!category) category = "other";
+const product = await Product.create({  
+  ...req.body,  
+  category: category.toLowerCase().trim()  
+});  
 
-    const product = await Product.create({
-      ...req.body,
-      category: category.toLowerCase().trim()
-    });
+res.json({ success: true, product });
 
-    // 🔥 Real-time update (safe)
-    if (typeof io !== "undefined") {
-      io.emit("productAdded", product);
-    }
-
-    return res.json({
-      success: true,
-      product
-    });
-
-  } catch (err) {
-    console.error("Add Product Error:", err);
-
-    return res.status(500).json({
-      success: false,
-      message: err.message
-    });
-  }
+} catch (err) {
+console.log(err);
+res.json({ success: false });
+}
 });
 app.get("/api/products/wholesaler/:id", async (req, res) => {
   try {
