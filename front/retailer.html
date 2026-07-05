@@ -1405,7 +1405,7 @@
     <div class="footer">
         <p>&copy; 2024 Local Dukan - Smart Marketplace</p>
     </div>
-
+     <script src="https://local-dukan.onrender.com/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 <script>    
 const API = "https://local-dukan.onrender.com";    
@@ -1496,94 +1496,101 @@ async function ensureRetailerLocation() {
   }
 // ------------------- PRODUCTS -------------------
 async function loadProducts() {
-document.getElementById("loader").style.display = "block";
-  try {
+    document.getElementById("loader").style.display = "block";
 
-    const res = await fetch(`${API}/api/products/all`);
-const data = await res.json();
+    try {
 
-if (!data.success) {
-    document.getElementById("categories").innerHTML =
-        "<p>No Products Found</p>";
-    return;
-}
+        const res = await fetch(`${API}/api/products/all`);
+        const data = await res.json();
 
-// 👇 Global variable में save
-allProducts = data.products || [];
+        if (!data.success) {
+            document.getElementById("categories").innerHTML =
+                "<p>No Products Found</p>";
+            return;
+        }
 
-    // Save products for category page
-    sessionStorage.setItem(
-      "nearbyProducts",
-      JSON.stringify(allProducts)
-    );
+        // Save globally
+        allProducts = data.products || [];
+        window.allProducts = allProducts;
 
-    // Global
-    window.allProducts = allProducts;
+        // Save for category page
+        sessionStorage.setItem(
+            "nearbyProducts",
+            JSON.stringify(allProducts)
+        );
 
-    // No Products
-    if (!allProducts.length) {
+        if (!allProducts.length) {
+            document.getElementById("categories").innerHTML =
+                "<p>No Products Found</p>";
 
-      document.getElementById("categories").innerHTML =
-        "<p>No Products Found</p>";
+            document.getElementById("allProducts").innerHTML = "";
+            return;
+        }
 
-      document.getElementById("allProducts").innerHTML = "";
+        // Categories
+        const categoryMap = {};
 
-      return;
+        allProducts.forEach(p => {
+            const cat = (p.category || "Other").trim();
+            categoryMap[cat] = true;
+        });
+
+        document.getElementById("categories").innerHTML =
+            Object.keys(categoryMap).map(cat => `
+                <div class="category-card"
+                     onclick="openCategory('${encodeURIComponent(cat)}')">
+                    <div class="category-icon">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div class="category-name">
+                        ${cat}
+                    </div>
+                </div>
+            `).join("");
+
+        renderAllProducts(allProducts.slice(0, 20));
+
+    } catch (err) {
+        console.error(err);
+        alert("Failed to load products");
+    } finally {
+        document.getElementById("loader").style.display = "none";
     }
-
-    // ================= Categories =================
-
-    const categoryMap = {};
-
-    allProducts.forEach(p => {
-
-      const cat = (p.category || "Other").trim();
-
-      categoryMap[cat] = true;
-
-    });
-
-    document.getElementById("categories").innerHTML =
-      Object.keys(categoryMap)
-      .map(cat => `
-
-        <div class="category-card"
-             onclick="openCategory('${encodeURIComponent(cat)}')">
-
-          <div class="category-icon">
-            <i class="bi bi-box-seam"></i>
-          </div>
-
-          <div class="category-name">
-            ${cat}
-          </div>
-
-        </div>
-
-      `).join("");
-
-    // ================= All Products =================
-
-    renderAllProducts(allProducts.slice(0, 20));
-
-  }
-
-  catch (err) {
-
-    console.error(err);
-
-    alert("Failed to load products");
-
-  }finally {
-
-    document.getElementById("loader").style.display = "none";
-
-  }
-
 }
 
+// First Load
 window.addEventListener("load", loadProducts);
 
+// ================= SOCKET.IO =================
+
+let socket = null;
+
+if (typeof io !== "undefined") {
+
+    socket = io(API);
+
+    socket.on("connect", () => {
+        console.log("✅ Retailer Socket Connected");
+    });
+
+    socket.on("productAdded", () => {
+        console.log("📦 Product Added");
+        loadProducts();
+    });
+
+    socket.on("productUpdated", () => {
+        console.log("✏️ Product Updated");
+        loadProducts();
+    });
+
+    socket.on("productDeleted", () => {
+        console.log("🗑️ Product Deleted");
+        loadProducts();
+    });
+
+} else {
+    console.warn("⚠️ Socket.IO not loaded");
+}
 function renderAllProducts(products){
 
     const container = document.getElementById("allProducts");
