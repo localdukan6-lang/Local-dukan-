@@ -1225,7 +1225,7 @@ async function initFCM() {
 
   console.log("🔥 FCM TOKEN:", token);
 
-  await fetch("https://shopbacked-vmhs.onrender.com/api/notifications/saveToken", {
+  await fetch("https://local-dukan.onrender.com/api/notifications/saveToken", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
