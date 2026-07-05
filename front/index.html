@@ -209,7 +209,7 @@ form::-webkit-scrollbar-thumb{
 
         <button onclick="showPanel('local')">
             <i class="fas fa-cart-shopping" style="color:#ffea00;"></i>
-            Local
+            Your signup 
         </button>
 
         <button onclick="showPanel('delivery')">
@@ -479,7 +479,7 @@ async function getFCMToken(){
 
 /* ================= AUTO LOGIN ================= */
 
-(function autoLoginCheck() {
+function autoLoginCheck() {
 
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
