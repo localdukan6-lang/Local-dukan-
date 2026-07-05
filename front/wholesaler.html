@@ -933,43 +933,48 @@ async function addProduct(){
 
   try {
 
-    const res = await fetch(API + "/api/products",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer " + TOKEN
-      },
-      body:JSON.stringify({
-        wholesalerId: WID,
-        productName: pname.value,
-        price: pprice.value,
-        detail: pdetail.value,
-        images: images,
-        category: category,
-        shopName: prof.shopName || "",
-        mobile: prof.mobile || "",
-        address: prof.address || "",
-        wholesalerLocation: prof.location || null
-      })
-    });
+  const res = await fetch(API + "/api/products", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + TOKEN
+    },
+    body: JSON.stringify({
+      wholesalerId: WID,
+      productName: pname.value,
+      price: pprice.value,
+      detail: pdetail.value,
+      images: images,
+      category: category,
+      shopName: prof.shopName || "",
+      mobile: prof.mobile || "",
+      address: prof.address || "",
+      wholesalerLocation: prof.location || null
+    })
+  });
 
-    const d = await res.json();
+  console.log("HTTP Status:", res.status);
 
-    if(d.success){
-      alert("✅ Product Added Successfully");
+  const text = await res.text();
+  console.log("Server Response:", text);
 
-      if(typeof closeAll === "function") closeAll();
-      if(typeof loadProducts === "function") loadProducts();
-      if(typeof loadCategoriesSelect === "function") loadCategoriesSelect();
+  const d = JSON.parse(text);
 
-    } else {
-      alert(d.message || "Failed to add product");
-    }
+  if (d.success) {
+    alert("✅ Product Added Successfully");
 
-  } catch(err){
-    console.error(err);
-    alert("Server Error / API Issue");
+    if (typeof closeAll === "function") closeAll();
+    if (typeof loadProducts === "function") loadProducts();
+    if (typeof loadCategoriesSelect === "function") loadCategoriesSelect();
+
+  } else {
+    alert(d.message || "Failed to add product");
   }
+
+} catch (err) {
+  console.error("ADD PRODUCT ERROR:", err);
+  alert("Server Error: " + err.message);
+}
 }
 // Call initially
 
