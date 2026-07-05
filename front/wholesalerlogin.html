@@ -204,42 +204,40 @@ form::-webkit-scrollbar-thumb{
 <body>  <div class="container">  
     <h1 class="logo-text-only">🏠local dukan</h1>  
     <div class="nav-buttons">  
-          
-        <button onclick="showPanel('wholesaler')"><i class="fas fa-cart-shopping" style="color:#ffea00;"></i> your signup</button>  
-        
+        <button onclick="showPanel('wholesaler')"><i class="fas fa-store" style="color:#00eaff;"></i> Wholesaler</button>  
+        <button onclick="showPanel('retailer')"><i class="fas fa-cart-shopping" style="color:#ffea00;"></i> Retailer</button>  
+        <button onclick="showPanel('delivery')"><i class="fas fa-motorcycle" style="color:#00ff88;"></i> Delivery Boy</button>  
           <div class="overlay" onclick="closePopup()"></div>
-    </div>  
-<!-- RETAILER -->  
-<div id="wholesaler" class="panel" style="display:none;"> 
+    </div>  <!-- WHOLESALER -->  
+<div id="wholesaler" class="panel" style="display:none;">  
   <div class="popup-header">
   <span class="close-btn" onclick="closePopup()">✖</span>
-</div>
+  </div>
     <div class="tabs">  
         <div class="tab active" onclick="switchTab('wholesaler','signup')">Sign-Up</div>  
         <div class="tab" onclick="switchTab('wholesaler','login')">Login</div>  
     </div>  
-    <form id="retailer-signup" class="active">  
+    <form id="wholesaler-signup" class="active">  
         <input type="text" placeholder="Name">  
-        <input type="text" placeholder="Mobile Number">  
+        <input type="number" placeholder="UPI Mobile Number">  
         <input type="text" placeholder="Shop Current Location">  
         <input type="password" placeholder="Password">  
         <input type="password" placeholder="Confirm Password">  
-        <button type="button" class="submit">Create Account</button> 
+        <button type="button" class="submit">Create Account</button>  
       <p style="margin-top:15px;font-size:14px;opacity:0.8">
   Already have an account?
   <span style="color:#00eaff;cursor:pointer;font-weight:600"
         onclick="switchTab('wholesaler','login')">
     Login here
   </span>
-</p>
+      </p>
     </form>  
     <form id="wholesaler-login">  
-        <input type="text" placeholder="Mobile Number">  
+        <input type="number" placeholder="Mobile Number">  
         <input type="password" placeholder="Password">  
         <button type="button" class="submit">Login</button>  
     </form>  
 </div>  
-
 
 
 
@@ -398,7 +396,7 @@ async function loginUser(type,mobile,password){
 }
 
 /* ================= BUTTON HANDLERS ================= */
-['wholsaler','retailer','delivery'].forEach(type=>{
+['wholesaler','retailer','delivery'].forEach(type=>{
   document.querySelector(`#${type}-signup .submit`).onclick=()=>{
     let data={};
     document.querySelectorAll(`#${type}-signup input, #${type}-signup select`).forEach(i=>{
