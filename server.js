@@ -2179,6 +2179,11 @@ app.get("/api/orders/delivery/:id", async (req, res) => {
   }
 });
 /* ================= SERVER ================= */
-app.get("/", (_,res)=>res.send("Backend Running ✅"));
+/* ================= SERVER ================= */
+app.get("/", (_, res) => res.send("Backend Running ✅"));
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, ()=>console.log("Server running on", PORT));
+
+server.listen(PORT, () => {
+  console.log("Server running on", PORT);
+});
