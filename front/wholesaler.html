@@ -1108,8 +1108,8 @@ alert("Order confirmed ✅");
 loadOrders();
 
 // Notify delivery boy
-socket.emit("newOrder", { orderId: id, vehicle });
-}
+if (socket) {
+    socket.emit("newOrder", { orderId: id, vehicle });
 }
 
 /* LOAD ORDERS */
