@@ -1496,91 +1496,80 @@ async function ensureRetailerLocation() {
   }
 // ------------------- PRODUCTS -------------------
 async function loadProducts() {
-document.getElementById("loader").style.display = "block";
-try {
 
-const res = await fetch(`${API}/api/products/all`);
+  document.getElementById("loader").style.display = "block";
 
-const data = await res.json();
+  try {
 
-if (!data.success) {
-document.getElementById("categories").innerHTML =
-"<p>No Products Found</p>";
-return;
-}
+    console.log("Loading products...");
 
-// 👇 Global variable में save
-allProducts = data.products || [];
+    const res = await fetch(`${API}/api/products/all`, {
+      cache: "no-store"
+    });
 
-// Save products for category page  
-sessionStorage.setItem(  
-  "nearbyProducts",  
-  JSON.stringify(allProducts)  
-);  
+    if (!res.ok) {
+      throw new Error("HTTP " + res.status);
+    }
 
-// Global  
-window.allProducts = allProducts;  
+    const data = await res.json();
 
-// No Products  
-if (!allProducts.length) {  
+    console.log(data);
 
-  document.getElementById("categories").innerHTML =  
-    "<p>No Products Found</p>";  
+    if (!data.success) {
+      document.getElementById("categories").innerHTML =
+        "<p>No Products Found</p>";
+      return;
+    }
 
-  document.getElementById("allProducts").innerHTML = "";  
+    allProducts = data.products || [];
 
-  return;  
-}  
+    sessionStorage.setItem(
+      "nearbyProducts",
+      JSON.stringify(allProducts)
+    );
 
-// ================= Categories =================  
+    window.allProducts = allProducts;
 
-const categoryMap = {};  
+    if (allProducts.length === 0) {
+      document.getElementById("categories").innerHTML =
+        "<p>No Products Found</p>";
+      document.getElementById("allProducts").innerHTML = "";
+      return;
+    }
 
-allProducts.forEach(p => {  
+    const categoryMap = {};
 
-  const cat = (p.category || "Other").trim();  
+    allProducts.forEach(p => {
+      const cat = (p.category || "Other").trim();
+      categoryMap[cat] = true;
+    });
 
-  categoryMap[cat] = true;  
+    document.getElementById("categories").innerHTML =
+      Object.keys(categoryMap).map(cat => `
+        <div class="category-card"
+             onclick="openCategory('${encodeURIComponent(cat)}')">
+          <div class="category-icon">
+            <i class="bi bi-box-seam"></i>
+          </div>
+          <div class="category-name">
+            ${cat}
+          </div>
+        </div>
+      `).join("");
 
-});  
+    renderAllProducts(allProducts.slice(0,20));
 
-document.getElementById("categories").innerHTML =  
-  Object.keys(categoryMap)  
-  .map(cat => `  
+  } catch (err) {
 
-    <div class="category-card"  
-         onclick="openCategory('${encodeURIComponent(cat)}')">  
+    console.error("Load Products Error:", err);
 
-      <div class="category-icon">  
-        <i class="bi bi-box-seam"></i>  
-      </div>  
+    alert(err.message);
 
-      <div class="category-name">  
-        ${cat}  
-      </div>  
+  } finally {
 
-    </div>  
+    document.getElementById("loader").style.display = "none";
 
-  `).join("");  
-
-// ================= All Products =================  
-
-renderAllProducts(allProducts.slice(0, 20));
-
-}
-
-catch (err) {
-
-console.error(err);  
-
-alert("Failed to load products");
-
-}finally {
-
-document.getElementById("loader").style.display = "none";
-
-}
-
+  }
 }
 
 window.addEventListener("load", loadProducts);
