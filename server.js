@@ -12,7 +12,14 @@ const TEN_MIN = 10 * 60 * 1000;
 app.use(cors());
 /* ================= MIDDLEWARE ================= */
 
+const server = http.createServer(app);
 
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 const admin = require("./firebaseAdmin");
 
 
