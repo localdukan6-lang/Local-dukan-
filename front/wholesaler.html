@@ -341,13 +341,30 @@ alert("Login again"); location.href="wholesalerlogin.html";
 widText.innerText=WID.substring(0,8).toUpperCase();
 
 /* SOCKET.IO */
-const socket = io(API);
-socket.emit("joinWholesaler", WID);
-// 🔥 Real-time update when delivery boy accepts
-socket.on("orderAssigned", ({ orderId, deliveryBoyId }) => {
-  console.log("Order assigned:", orderId, deliveryBoyId);
-  loadOrders(); // wholesaler order auto refresh
-});
+let socket = null;
+
+if (typeof io !== "undefined") {
+
+    socket = io(API);
+
+    socket.on("connect", () => {
+        console.log("✅ Socket Connected");
+
+        socket.emit("joinWholesaler", WID);
+    });
+
+    socket.on("orderAssigned", ({ orderId, deliveryBoyId }) => {
+        console.log("Order assigned:", orderId, deliveryBoyId);
+        loadOrders();
+    });
+
+    socket.on("connect_error", (err) => {
+        console.log("❌ Socket Error:", err.message);
+    });
+
+} else {
+    console.warn("⚠️ Socket.IO library not loaded");
+}
 
 function openOrders(){orderModal.style.display="flex";loadOrders();}
 function formatDateTime(ts) {
