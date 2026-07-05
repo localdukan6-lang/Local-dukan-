@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Local dukan</title>
+<title>local dukan</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -201,192 +201,87 @@ form::-webkit-scrollbar-thumb{
   border-radius:6px;
 }
 </style>  </head>  
-<body>  <div class="container">
-
-    <h1 class="logo-text-only">🏠Local dukan</h1>
-
-    <div class="nav-buttons">
-
-        <button onclick="showPanel('local')">
-            <i class="fas fa-cart-shopping" style="color:#ffea00;"></i>
-            Your signup 
-        </button>
-
-        <button onclick="showPanel('delivery')">
-            <i class="fas fa-motorcycle" style="color:#00ff88;"></i>
-            Delivery Boy
-        </button>
-
-        <div class="overlay" onclick="closePopup()"></div>
-
-    </div>
-
-
-    <!-- ================= LOCAL ================= -->
-
-    <div id="local" class="panel" style="display:none;">
-
-        <div class="popup-header">
-            <span class="close-btn" onclick="closePopup()">✖</span>
-        </div>
-
-        <div class="tabs">
-
-            <div class="tab active"
-                 onclick="switchTab('local','signup')">
-                Sign-Up
-            </div>
-
-            <div class="tab"
-                 onclick="switchTab('local','login')">
-                Login
-            </div>
-
-        </div>
-
-        <!-- Signup -->
-
-        <form id="local-signup" class="active">
-
-            <input type="text" placeholder="Name">
-
-            <input type="text" placeholder="Mobile Number">
-
-            <input type="text" placeholder="Shop Current Location">
-
-            <input type="password" placeholder="Password">
-
-            <input type="password" placeholder="Confirm Password">
-
-            <button type="button" class="submit">
-                Create Account
-            </button>
-
-            <p style="margin-top:15px;font-size:14px;opacity:.8">
-
-                Already have an account?
-
-                <span
-                    style="color:#00eaff;cursor:pointer;font-weight:600"
-                    onclick="switchTab('local','login')">
-
-                    Login here
-
-                </span>
-
-            </p>
-
-        </form>
-
-
-        <!-- Login -->
-
-        <form id="local-login">
-
-            <input type="text" placeholder="Mobile Number">
-
-            <input type="password" placeholder="Password">
-
-            <button type="button" class="submit">
-                Login
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <!-- ================= DELIVERY ================= -->
-
-    <div id="delivery" class="panel" style="display:none;">
-
-        <div class="popup-header">
-            <span class="close-btn" onclick="closePopup()">✖</span>
-        </div>
-
-        <div class="tabs">
-
-            <div class="tab active"
-                 onclick="switchTab('delivery','signup')">
-                Sign-Up
-            </div>
-
-            <div class="tab"
-                 onclick="switchTab('delivery','login')">
-                Login
-            </div>
-
-        </div>
-
-
-        <!-- Signup -->
-
-        <form id="delivery-signup" class="active">
-
-            <input type="text" placeholder="Name">
-
-            <input type="text" placeholder="Mobile Number">
-
-            <input type="text" placeholder="Alternate Mobile (optional)">
-
-            <input type="text" placeholder="Current Live Location">
-
-            <input type="password" placeholder="Password">
-
-            <input type="password" placeholder="Confirm Password">
-
-            <select>
-
-                <option>2-Wheeler</option>
-
-                <option>3-Wheeler</option>
-
-                <option>4-Wheeler</option>
-
-            </select>
-
-            <input type="text" placeholder="Vehicle Model">
-
-            <input type="text" placeholder="Vehicle Number">
-
-            <button type="button" class="submit">
-                Create Account
-            </button>
-
-            <p style="margin-top:15px;font-size:14px;opacity:.8">
-
-                Already have an account?
-
-                <span
-                    style="color:#00eaff;cursor:pointer;font-weight:600"
-                    onclick="switchTab('delivery','login')">
-
-                    Login here
-
-                </span>
-
-            </p>
-
-        </form>
-
-
-        <!-- Login -->
-
-        <form id="delivery-login">
-
-            <input type="text" placeholder="Mobile Number">
-
-            <input type="password" placeholder="Password">
-
-            <button type="button" class="submit">
-                Login
-            </button>
-
-        </form>
-
-    </div>
-
-</div> <script type="module">
+<body>  <div class="container">  
+    <h1 class="logo-text-only">🏠local dukan</h1>  
+    <div class="nav-buttons">  
+        <button onclick="showPanel('wholesaler')"><i class="fas fa-store" style="color:#00eaff;"></i> Wholesaler</button>  
+        <button onclick="showPanel('retailer')"><i class="fas fa-cart-shopping" style="color:#ffea00;"></i> Retailer</button>  
+        <button onclick="showPanel('delivery')"><i class="fas fa-motorcycle" style="color:#00ff88;"></i> Delivery Boy</button>  
+          <div class="overlay" onclick="closePopup()"></div>
+    </div>  
+<!-- RETAILER -->  
+<div id="retailer" class="panel" style="display:none;"> 
+  <div class="popup-header">
+  <span class="close-btn" onclick="closePopup()">✖</span>
+</div>
+    <div class="tabs">  
+        <div class="tab active" onclick="switchTab('retailer','signup')">Sign-Up</div>  
+        <div class="tab" onclick="switchTab('retailer','login')">Login</div>  
+    </div>  
+    <form id="retailer-signup" class="active">  
+        <input type="text" placeholder="Name">  
+        <input type="text" placeholder="Mobile Number">  
+        <input type="text" placeholder="Shop Current Location">  
+        <input type="password" placeholder="Password">  
+        <input type="password" placeholder="Confirm Password">  
+        <button type="button" class="submit">Create Account</button> 
+      <p style="margin-top:15px;font-size:14px;opacity:0.8">
+  Already have an account?
+  <span style="color:#00eaff;cursor:pointer;font-weight:600"
+        onclick="switchTab('retailer','login')">
+    Login here
+  </span>
+</p>
+    </form>  
+    <form id="retailer-login">  
+        <input type="text" placeholder="Mobile Number">  
+        <input type="password" placeholder="Password">  
+        <button type="button" class="submit">Login</button>  
+    </form>  
+</div>  
+
+<!-- DELIVERY BOY -->  
+<div id="delivery" class="panel" style="display:none;"> 
+ <div class="popup-header">
+  <span class="close-btn" onclick="closePopup()">✖</span>
+</div> 
+    <div class="tabs">  
+        <div class="tab active" onclick="switchTab('delivery','signup')">Sign-Up</div>  
+        <div class="tab" onclick="switchTab('delivery','login')">Login</div>  
+    </div>  
+    <form id="delivery-signup" class="active">  
+        <input type="text" placeholder="Name">  
+        <input type="text" placeholder="Mobile Number">  
+        <input type="text" placeholder="Alternate Mobile (optional)">  
+        <input type="text" placeholder="Current Live Location">  
+        <input type="password" placeholder="Password">  
+        <input type="password" placeholder="Confirm Password">  
+        <select>  
+            <option>2-Wheeler</option>  
+            <option>3-Wheeler</option>  
+            <option>4-Wheeler</option>  
+        </select>  
+        <input type="text" placeholder="Vehicle Model">  
+        <input type="text" placeholder="Vehicle Number">  
+        <button type="button" class="submit">Create Account</button> 
+      <p style="margin-top:15px;font-size:14px;opacity:0.8">
+  Already have an account?
+  <span style="color:#00eaff;cursor:pointer;font-weight:600"
+        onclick="switchTab('delivery','login')">
+    Login here
+  </span>
+      </p>
+    </form>  
+    <form id="delivery-login">  
+        <input type="text" placeholder="Mobile Number">  
+        <input type="password" placeholder="Password">  
+        <button type="button" class="submit">Login</button>  
+    </form>  
+</div>  
+
+
+
+</div>  <script type="module">
     if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/firebase-messaging-sw.js")
     .then(() => console.log("✅ FCM Service Worker registered"))
@@ -410,7 +305,7 @@ const messaging = getMessaging(app);
 const VAPID_KEY = "BFcKfbosO2sXWogZ5fBBt31vEkw_1iwgQWVrZjAJ90pXdhdFBSbXM_Oppuoxm-QIidekMzIQdcl3XrJy0ltkC8s";
 
 /* ================= SERVER ================= */
-const SERVER_URL = "https://local-dukan.onrender.com";
+const SERVER_URL = "https://shopbacked-ormp.onrender.com";
 async function requestNotificationPermission() {
   if (!("Notification" in window)) {
     alert("This browser does not support notifications");
@@ -477,263 +372,86 @@ async function getFCMToken(){
   }
 }
 
-/* ================= AUTO LOGIN ================= */
-
 (function autoLoginCheck() {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
 
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-
-    if (!token || !role) return;
-
-    if (role === "retailer") {
-
-        window.location.href = "retailer.html";
-
-    }
-
-    else if (role === "delivery") {
-
-        window.location.href = "delivery.html";
-
-    }
-
+  if (token && role) {
+    // ✅ Already logged in → direct dashboard
+    window.location.href = role + ".html";
+  }
 })();
-
+    
 /* ================= SIGNUP ================= */
-
-async function signupUser(type, data) {
-
-    try {
-
-        const res = await fetch(`${SERVER_URL}/api/signup`, {
-
-            method: "POST",
-
-            headers: {
-
-                "Content-Type": "application/json"
-
-            },
-
-            body: JSON.stringify({
-
-                ...data,
-
-                role: type
-
-            })
-
-        });
-
-        const json = await res.json();
-
-        if (!json.success) {
-
-            alert(json.message);
-
-            return;
-
-        }
-
-        localStorage.setItem("token", json.token);
-
-        localStorage.setItem("userId", json.userId);
-
-        localStorage.setItem("role", type);
-
-        alert(type + " Signup Successful");
-
-        if (type === "retailer") {
-
-            window.location.href = "local.html";
-
-        }
-
-        else if (type === "delivery") {
-
-            window.location.href = "delivery.html";
-
-        }
-
-    }
-
-    catch (err) {
-
-        alert("Server Error : " + err.message);
-
-    }
-
+async function signupUser(type,data){
+  try{
+    const res = await fetch(`${SERVER_URL}/api/signup`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({...data,role:type})
+    });
+    const json = await res.json();
+    if(json.success){
+      localStorage.setItem("token",json.token);
+      localStorage.setItem("userId",json.userId);
+      localStorage.setItem("role",type);
+      alert(type+" signup success");
+      window.location.href = type+".html";
+    }else alert(json.message);
+  }catch(err){ alert("Server error: "+err.message); }
 }
 
-/* ================= LOGIN ================= */
+/* ================= LOGIN + FCM ================= */
+async function loginUser(type,mobile,password){
+  try{
+    const res = await fetch(`${SERVER_URL}/api/login`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({mobile,password,role:type})
+    });
+    const json = await res.json();
+    if(!json.success) return alert(json.message);
 
-async function loginUser(type, mobile, password) {
+    localStorage.setItem("token",json.token);
+    localStorage.setItem("userId",json.userId);
+    localStorage.setItem("role",type);
 
-    try {
-
-        const res = await fetch(`${SERVER_URL}/api/login`, {
-
-            method: "POST",
-
-            headers: {
-
-                "Content-Type": "application/json"
-
-            },
-
-            body: JSON.stringify({
-
-                mobile,
-
-                password,
-
-                role: type
-
-            })
-
-        });
-
-        const json = await res.json();
-
-        if (!json.success) {
-
-            alert(json.message);
-
-            return;
-
-        }
-
-        localStorage.setItem("token", json.token);
-
-        localStorage.setItem("userId", json.userId);
-
-        localStorage.setItem("role", type);
-
-        // ========= SAVE FCM =========
-
-        const fcmToken = await getFCMToken();
-
-        if (fcmToken) {
-
-            await fetch(`${SERVER_URL}/api/notifications/saveToken`, {
-
-                method: "POST",
-
-                headers: {
-
-                    "Content-Type": "application/json"
-
-                },
-
-                body: JSON.stringify({
-
-                    userId: json.userId,
-
-                    role: type,
-
-                    fcmToken
-
-                })
-
-            });
-
-        }
-
-        if (type === "retailer") {
-
-            window.location.href = "local.html";
-
-        }
-
-        else if (type === "delivery") {
-
-            window.location.href = "delivery.html";
-
-        }
-
+    /* 🔥 FCM TOKEN SEND */
+    const fcmToken = await getFCMToken();
+    if(fcmToken){
+      await fetch(`${SERVER_URL}/api/notifications/saveToken`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          userId: json.userId,
+          role: type,
+          fcmToken
+        })
+      });
     }
 
-    catch (err) {
-
-        alert("Server Error : " + err.message);
-
-    }
-
+    window.location.href = type+".html";
+  }catch(err){ alert("Server error: "+err.message); }
 }
 
 /* ================= BUTTON HANDLERS ================= */
-
-["retailer", "delivery"].forEach(type => {
-
-    const signupBtn = document.querySelector(`#${type}-signup .submit`);
-
-    if (signupBtn) {
-
-        signupBtn.onclick = () => {
-
-            let data = {};
-
-            document.querySelectorAll(
-
-                `#${type}-signup input, #${type}-signup select`
-
-            ).forEach(i => {
-
-                let key = i.placeholder
-
-                    ? i.placeholder
-
-                        .replace(/ /g, "_")
-
-                        .toLowerCase()
-
-                    : "vehicle";
-
-                data[key] = i.value;
-
-            });
-
-            if (data.password !== data.confirm_password) {
-
-                alert("Password mismatch");
-
-                return;
-
-            }
-
-            signupUser(type, data);
-
-        };
-
+['wholesaler','retailer','delivery'].forEach(type=>{
+  document.querySelector(`#${type}-signup .submit`).onclick=()=>{
+    let data={};
+    document.querySelectorAll(`#${type}-signup input, #${type}-signup select`).forEach(i=>{
+      let key=i.placeholder?i.placeholder.replace(/ /g,'_').toLowerCase():"vehicle";
+      data[key]=i.value;
+    });
+    if(data.password!==data.confirm_password){
+      alert('Password mismatch'); return;
     }
+    signupUser(type,data);
+  };
 
-    const loginBtn = document.querySelector(`#${type}-login .submit`);
-
-    if (loginBtn) {
-
-        loginBtn.onclick = () => {
-
-            const inputs = document.querySelectorAll(
-
-                `#${type}-login input`
-
-            );
-
-            loginUser(
-
-                type,
-
-                inputs[0].value,
-
-                inputs[1].value
-
-            );
-
-        };
-
-    }
-
+  document.querySelector(`#${type}-login .submit`).onclick=()=>{
+    let inputs=document.querySelectorAll(`#${type}-login input`);
+    loginUser(type,inputs[0].value,inputs[1].value);
+  };
 });
 </script>  </body>  
 </html>
