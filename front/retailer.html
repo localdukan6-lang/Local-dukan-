@@ -1487,7 +1487,7 @@ async function ensureRetailerLocation() {
   }
 // ------------------- PRODUCTS -------------------
 async function loadProducts() {
-
+document.getElementById("loader").style.display = "block";
   try {
 
     const res = await fetch(`${API}/api/products/all`);
@@ -1564,6 +1564,10 @@ allProducts = data.products || [];
     console.error(err);
 
     alert("Failed to load products");
+
+  }finally {
+
+    document.getElementById("loader").style.display = "none";
 
   }
 
