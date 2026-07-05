@@ -1585,36 +1585,7 @@ document.getElementById("loader").style.display = "none";
 
 window.addEventListener("load", loadProducts);
 
-// ================= SOCKET.IO =================
 
-let socket = null;
-
-if (typeof io !== "undefined") {
-
-    socket = io(API);
-
-    socket.on("connect", () => {
-        console.log("✅ Retailer Socket Connected");
-    });
-
-    socket.on("productAdded", () => {
-        console.log("📦 Product Added");
-        loadProducts();
-    });
-
-    socket.on("productUpdated", () => {
-        console.log("✏️ Product Updated");
-        loadProducts();
-    });
-
-    socket.on("productDeleted", () => {
-        console.log("🗑️ Product Deleted");
-        loadProducts();
-    });
-
-} else {
-    console.warn("⚠️ Socket.IO not loaded");
-}
 function renderAllProducts(products){
 
     const container = document.getElementById("allProducts");
