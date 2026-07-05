@@ -1196,6 +1196,26 @@ background-position:-100% 0;
     </style>
 </head>
 <body>
+    <div id="pageLoader" class="page-loader">
+
+    <div class="loader-header"></div>
+
+    <div class="loader-search"></div>
+
+    <div class="loader-category"></div>
+
+    <div class="loader-category"></div>
+
+    <div class="loader-products">
+
+        <div class="loader-card"></div>
+        <div class="loader-card"></div>
+        <div class="loader-card"></div>
+        <div class="loader-card"></div>
+
+    </div>
+
+    </div>
     <!-- ==================== NAVBAR ==================== -->
     <nav class="navbar">
         <div class="navbar-wrapper">
@@ -1312,26 +1332,9 @@ background-position:-100% 0;
             </div>
         </div>
     </div>
-     <div id="pageLoader" class="page-loader">
 
-    <div class="loader-header"></div>
 
-    <div class="loader-search"></div>
-
-    <div class="loader-category"></div>
-
-    <div class="loader-category"></div>
-
-    <div class="loader-products">
-
-        <div class="loader-card"></div>
-        <div class="loader-card"></div>
-        <div class="loader-card"></div>
-        <div class="loader-card"></div>
-
-    </div>
-
-     </div>
+     
     <!-- Cart Modal -->
     <div class="modal" id="cartModal">
         <div class="modal-sheet">
@@ -3381,7 +3384,17 @@ setInterval(async () => {
 
 }, 8000);
 
+window.onload = async function(){
 
+    document.getElementById("pageLoader").style.display="block";
+
+    await loadProducts();
+
+    await loadProfile();
+
+    document.getElementById("pageLoader").style.display="none";
+
+          }
 /* ================= CLOSE ALL MODALS ================= */
 function closeAll() {
   document.querySelectorAll(".modal").forEach(m => {
