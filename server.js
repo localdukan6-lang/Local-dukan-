@@ -1155,6 +1155,7 @@ const Category = mongoose.model("Category", categorySchema);
 /* ================= PRODUCTS ================= */
 app.post("/api/products", async (req, res) => {
   try {
+
     let { category } = req.body;
 
     if (!category) category = "other";
@@ -1164,11 +1165,23 @@ app.post("/api/products", async (req, res) => {
       category: category.toLowerCase().trim()
     });
 
-    res.json({ success: true, product });
+    // 🔥 Real-time update (safe)
+    if (typeof io !== "undefined") {
+      io.emit("productAdded", product);
+    }
+
+    return res.json({
+      success: true,
+      product
+    });
 
   } catch (err) {
-    console.log(err);
-    res.json({ success: false });
+    console.error("Add Product Error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 });
 app.get("/api/products/wholesaler/:id", async (req, res) => {
