@@ -5,7 +5,8 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Razorpay = require("razorpay");
-
+const http = require("http");
+const { Server } = require("socket.io");
 const app = express();
 const TEN_MIN = 10 * 60 * 1000;
 app.use(cors());
