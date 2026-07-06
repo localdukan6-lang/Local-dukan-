@@ -1083,12 +1083,22 @@ app.get("/api/cart/:retailerId", (req,res)=>{
 app.get("/api/products/all", async (req, res) => {
   try {
 
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+
     const products = await Product.find()
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total = await Product.countDocuments();
 
     res.json({
       success: true,
-      products
+      products,
+      page,
+      total,
+      hasMore: page * limit < total
     });
 
   } catch (err) {
