@@ -1523,10 +1523,15 @@ async function loadProducts() {
 
     allProducts = data.products || [];
 
-    sessionStorage.setItem(
-      "nearbyProducts",
-      JSON.stringify(allProducts)
-    );
+    // ✅ SessionStorage safe
+    try {
+      sessionStorage.setItem(
+        "nearbyProducts",
+        JSON.stringify(allProducts)
+      );
+    } catch (e) {
+      console.warn("SessionStorage Full. Skipping save.");
+    }
 
     window.allProducts = allProducts;
 
@@ -1551,18 +1556,15 @@ async function loadProducts() {
           <div class="category-icon">
             <i class="bi bi-box-seam"></i>
           </div>
-          <div class="category-name">
-            ${cat}
-          </div>
+          <div class="category-name">${cat}</div>
         </div>
       `).join("");
 
-    renderAllProducts(allProducts.slice(0,20));
+    renderAllProducts(allProducts.slice(0, 20));
 
   } catch (err) {
 
     console.error("Load Products Error:", err);
-
     alert(err.message);
 
   } finally {
@@ -1573,7 +1575,6 @@ async function loadProducts() {
 }
 
 window.addEventListener("load", loadProducts);
-
 
 function renderAllProducts(products){
 
