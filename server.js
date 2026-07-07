@@ -1852,35 +1852,59 @@ app.post("/api/retailers/saveProfile", async (req, res) => {
   }
 });
 app.get("/api/retailers/profile/:id", async (req, res) => {
+
   try {
+
     const user = await User.findById(req.params.id);
 
     if (!user) {
-      return res.json({ success:false, msg:"User not found" });
+      return res.json({
+        success: false,
+        msg: "User not found"
+      });
     }
 
     res.json({
+
       success: true,
+
       profile: {
+
         name: user.name || "",
+
         mobile: user.mobile || "",
+
         address: user.shop_current_location || "",
+
         location: user.location || null,
 
-        // 🔥 VERY IMPORTANT
+        // ✅ Coin Wallet
+        coins: user.coins || 0,
+
+        // ✅ Referral Code
+        referralCode: user.referralCode || "",
+
+        // ✅ Location Meta
         locationMeta: {
           firstSetAt: user.locationMeta?.firstSetAt || null,
           locked: user.locationMeta?.locked || false
         }
+
       }
+
     });
 
   } catch (err) {
-    console.error("Get retailer profile error:", err);
-    res.status(500).json({ success:false });
-  }
-});
 
+    console.error("Get retailer profile error:", err);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+
+});
 
 
 /* ================= PAYMENT ================= */
