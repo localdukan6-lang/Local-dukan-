@@ -392,42 +392,60 @@ const retailerLocation = retailer.location;
     const itemTotal = price * quantity;
 
     const o = await Order.create({
-      paymentId,
-      cartGroupId,
-      isCartOrder: true,
 
-      productId: p.productId,
-      productName: p.productName,
-      productImg: p.productImg || "",
+  paymentId,
+  cartGroupId,
+  isCartOrder: true,
 
-      price,
-      quantity,
+  productId: p.productId,
+  productName: p.productName,
+  productImg: p.productImg || "",
 
-      wholesalerId: p.wholesalerId,
-      wholesalerName: p.wholesalerName,
-      wholesalerMobile: p.wholesalerMobile,
-      wholesalerLocation,
+  price,
+  quantity,
 
-      retailerId: notes.retailerId,
-      retailerName: notes.retailerName,
-      retailerMobile: notes.retailerMobile,
-      retailerLocation,
+  wholesalerId: p.wholesalerId,
+  wholesalerName: p.wholesalerName,
+  wholesalerMobile: p.wholesalerMobile,
+  wholesalerLocation,
 
-      vehicleType: notes.vehicleType,
+  retailerId: notes.retailerId,
+  retailerName: notes.retailerName,
+  retailerMobile: notes.retailerMobile,
+  retailerLocation,
 
-      deliveryCharge: safeNumber(notes.deliveryCharge),
-      retailerDeliveryPay: safeNumber(notes.retailerDeliveryPay),
-      wholesalerDeliveryPay: safeNumber(notes.wholesalerDeliveryPay),
+  vehicleType: notes.vehicleType,
 
-      distanceKm: safeNumber(notes.distanceKm),
-      timeMinutes: safeNumber(notes.timeMinutes),
+  deliveryCharge: safeNumber(notes.deliveryCharge),
+  retailerDeliveryPay: safeNumber(notes.retailerDeliveryPay),
+  wholesalerDeliveryPay: safeNumber(notes.wholesalerDeliveryPay),
 
-      totalAmount: itemTotal + safeNumber(notes.retailerDeliveryPay),
+  distanceKm: safeNumber(notes.distanceKm),
+  timeMinutes: safeNumber(notes.timeMinutes),
 
+  totalAmount: itemTotal + safeNumber(notes.retailerDeliveryPay),
+
+  // ✅ Coin Details
+  coinsUsed: coinUsed,
+
+  coinDiscount: coinUsed,
+
+  payableAmount:
+    (itemTotal + safeNumber(notes.retailerDeliveryPay)) - coinUsed,
+
+  deliveryAddress:
+    notes.address || "",
+
+  status: "paid",
+
+  statusHistory: [
+    {
       status: "paid",
-      statusHistory: [{ status: "paid", time: Date.now() }]
-    });
+      time: Date.now()
+    }
+  ]
 
+});
     await markOrderPaid(o._id, paymentId);
     createdOrders.push(o);
   }
@@ -464,38 +482,56 @@ else if (notes.type === "direct") {
   const deliveryPay = safeNumber(notes.retailerDeliveryPay);
 
   const o = await Order.create({
-    paymentId,
-    isCartOrder: false,
 
-    productId: product._id,
-    productName: product.productName,
-    productImg: product.images?.[0] || "",
+  paymentId,
+  isCartOrder: false,
 
-    price,
-    quantity: 1,
+  productId: product._id,
+  productName: product.productName,
+  productImg: product.images?.[0] || "",
 
-    wholesalerId: wholesaler._id,
-    wholesalerName: wholesaler.shopName || wholesaler.name,
-    wholesalerMobile: wholesaler.mobile,
-    wholesalerLocation: wholesaler.location || null,
+  price,
+  quantity: 1,
 
-    retailerId: retailer._id,
-    retailerName: retailer.name,
-    retailerMobile: retailer.mobile,
-    retailerLocation: retailer.location || null,
+  wholesalerId: wholesaler._id,
+  wholesalerName: wholesaler.shopName || wholesaler.name,
+  wholesalerMobile: wholesaler.mobile,
+  wholesalerLocation: wholesaler.location || null,
 
-    vehicleType: notes.vehicleType,
+  retailerId: retailer._id,
+  retailerName: retailer.name,
+  retailerMobile: retailer.mobile,
+  retailerLocation: retailer.location || null,
 
-    deliveryCharge: safeNumber(notes.deliveryCharge),
-    retailerDeliveryPay: deliveryPay,
-    wholesalerDeliveryPay: safeNumber(notes.wholesalerDeliveryPay),
+  vehicleType: notes.vehicleType,
 
-    totalAmount: price + deliveryPay,
+  deliveryCharge: safeNumber(notes.deliveryCharge),
+  retailerDeliveryPay: deliveryPay,
+  wholesalerDeliveryPay: safeNumber(notes.wholesalerDeliveryPay),
 
-    status: "paid",
-    statusHistory: [{ status: "paid", time: Date.now() }]
-  });
+  totalAmount: price + deliveryPay,
 
+  // ✅ Coin Details
+  coinsUsed: coinUsed,
+
+  coinDiscount: coinUsed,
+
+  payableAmount:
+    (price + deliveryPay) - coinUsed,
+
+  deliveryAddress:
+    notes.address || "",
+
+  status: "paid",
+
+  statusHistory: [
+    {
+      status: "paid",
+      time: Date.now()
+    }
+  ]
+
+});
   await markOrderPaid(o._id, paymentId);
   createdOrders.push(o);
 
