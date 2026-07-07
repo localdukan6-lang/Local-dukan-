@@ -870,68 +870,147 @@ const cartRoutes = require("./cart");
 
 app.use("/api/cart", cartRoutes);
 /* ================= AUTH ================= */
-app.post("/api/signup", async (req,res)=>{
+app.post("/api/signup", async (req, res) => {
+
   console.log("🔥 Signup API Hit");
   console.log("📦 Body:", req.body);
-  
-try{
-let {
-role,
-password,
-mobile,
-mobile_number,
-upi_mobile_number
-} = req.body;
 
-// 🔁 FRONTEND FALLBACK SUPPORT  
-mobile = mobile || mobile_number || upi_mobile_number;  
+  try {
 
-if(!role || !mobile || !password){  
-  return res.json({  
-    success:false,  
-    message:"Missing required fields"  
-  });  
-}  
+    let {
+      role,
+      password,
+      mobile,
+      mobile_number,
+      upi_mobile_number,
+      referredBy
+    } = req.body;
 
-const exists = await User.findOne({ mobile, role });  
-if(exists){  
-  return res.json({  
-    success:false,  
-    message:"User already exists"  
-  });  
-}  
+    // Frontend fallback
+    mobile = mobile || mobile_number || upi_mobile_number;
 
-const hashed = await bcrypt.hash(password,10);  
+    if (!role || !mobile || !password) {
+      return res.json({
+        success: false,
+        message: "Missing required fields"
+      });
+    }
 
-const user = await User.create({  
-  role,  
-  mobile,  
-  password: hashed,  
+    const exists = await User.findOne({ mobile, role });
 
-  // optional fields  
-  name: req.body.name || "",  
-  shop_current_location:  
-    req.body.shop_current_location ||  
-    req.body.current_live_location ||  
-    ""  
-});  
+    if (exists) {
+      return res.json({
+        success: false,
+        message: "User already exists"
+      });
+    }
 
-const token = jwt.sign(  
-  { id:user._id, role:user.role },  
-  process.env.JWT_SECRET,  
-  { expiresIn:"7d" }  
-);  
+    const hashed = await bcrypt.hash(password, 10);
 
-res.json({  
-  success:true,  
-  token,  
-  userId:user._id  
-});
+    // Unique Referral Code
+    const referralCode =
+      "LD" + crypto.randomBytes(3).toString("hex").toUpperCase();
 
-}catch(err){
-console.error("Signup Error:", err);
-res.status(500).json({ success:false });
-}
+    const user = await User.create({
+
+      role,
+      mobile,
+      password: hashed,
+
+      name: req.body.name || "",
+
+      shop_current_location:
+        req.body.shop_current_location ||
+        req.body.current_live_location ||
+        "",
+
+      vehicle: req.body.vehicle || "",
+
+      vehicle_model: req.body.vehicle_model || "",
+
+      vehicle_number: req.body.vehicle_number || "",
+
+      coins: 100,
+
+      referralCode,
+
+      referredBy: referredBy || ""
+
+    });
+
+    // Signup Bonus History
+    if (typeof CoinHistory !== "undefined") {
+      await CoinHistory.create({
+        userId: user._id,
+        amount: 100,
+        reason: "Signup Bonus"
+      });
+    }
+
+    // Referral Reward
+    if (referredBy) {
+
+      const inviter = await User.findOne({
+        referralCode: referredBy
+      });
+
+      if (inviter) {
+
+        inviter.coins += 100;
+        await inviter.save();
+
+        user.coins += 100;
+        await user.save();
+
+        if (typeof CoinHistory !== "undefined") {
+
+          await CoinHistory.create({
+            userId: inviter._id,
+            amount: 100,
+            reason: "Referral Reward"
+          });
+
+          await CoinHistory.create({
+            userId: user._id,
+            amount: 100,
+            reason: "Referral Signup"
+          });
+
+        }
+
+      }
+
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d"
+      }
+    );
+
+    res.json({
+      success: true,
+      token,
+      userId: user._id,
+      referralCode: user.referralCode,
+      coins: user.coins
+    });
+
+  } catch (err) {
+
+    console.error("Signup Error:", err);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+
 });
 
 app.post("/api/login", async (req, res) => {
