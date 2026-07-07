@@ -1931,47 +1931,86 @@ app.get("/api/retailers/profile/:id", async (req, res) => {
 /* ================= PAYMENT ================= */
 app.post("/api/orders/pay-and-create", async (req, res) => {
   try {
+
     const { amount, notes } = req.body;
 
     const razorpayOrder = await razorpay.orders.create({
+
       amount: Math.round(Number(amount) * 100),
+
       currency: "INR",
+
       receipt: "rcpt_" + Date.now(),
 
-      // ✅ FULL NOTES PASS
       notes: {
+
+        // ================= ORDER TYPE =================
         type: notes.type || "direct",
 
+        // ================= PRODUCT =================
+        productId: notes.productId || "",
         products: notes.products || "",
 
+        // ================= WHOLESALER =================
+        wholesalerId: notes.wholesalerId || "",
+        wholesalerName: notes.wholesalerName || "",
+        wholesalerMobile: notes.wholesalerMobile || "",
+        wholesalerLocation: notes.wholesalerLocation || "",
+
+        // ================= RETAILER =================
         retailerId: notes.retailerId || "",
         retailerName: notes.retailerName || "",
         retailerMobile: notes.retailerMobile || "",
-
         retailerLocation: notes.retailerLocation || "",
-        wholesalerLocation: notes.wholesalerLocation || "",
 
+        // ================= ADDRESS =================
+        address: notes.address || "",
+
+        // ================= COINS =================
+        useCoins: notes.useCoins || false,
+        coinUsed: Number(notes.coinUsed || 0),
+
+        // ================= DELIVERY =================
         vehicleType: notes.vehicleType || "",
 
-        deliveryCharge: notes.deliveryCharge || 0,
-        retailerDeliveryPay: notes.retailerDeliveryPay || 0,
-        wholesalerDeliveryPay: notes.wholesalerDeliveryPay || 0,
+        deliveryCharge: Number(notes.deliveryCharge || 0),
 
-        distanceKm: notes.distanceKm || 0,
-        timeMinutes: notes.timeMinutes || 0
+        retailerDeliveryPay: Number(notes.retailerDeliveryPay || 0),
+
+        wholesalerDeliveryPay: Number(notes.wholesalerDeliveryPay || 0),
+
+        distanceKm: Number(notes.distanceKm || 0),
+
+        timeMinutes: Number(notes.timeMinutes || 0)
+
       }
+
     });
 
     res.json({
+
       success: true,
+
       key: process.env.RAZORPAY_KEY_ID,
+
       orderId: razorpayOrder.id,
+
       amount: razorpayOrder.amount
+
     });
 
   } catch (err) {
+
     console.error("❌ Pay create error:", err);
-    res.status(500).json({ success: false });
+
+    res.status(500).json({
+
+      success: false,
+
+      message: "Payment order create failed"
+
+    });
+
   }
 });
 
