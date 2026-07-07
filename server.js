@@ -1084,7 +1084,7 @@ app.get("/api/products/all", async (req, res) => {
   try {
 
     const page = parseInt(req.query.page) || 1;
-    const limit = 6;
+    const limit = 15;
 
     const products = await Product.find()
       .sort({ createdAt: -1 })
