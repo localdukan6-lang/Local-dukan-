@@ -324,13 +324,52 @@ if (notes.type === "cart" && notes.products) {
   }
 
   // ✅ GET RETAILER LOCATION FROM DB
-  const retailer = await User.findById(notes.retailerId);
-  if (!retailer || !retailer.location) {
-    console.log("❌ Retailer location not found in DB");
-    return res.json({ success: false });
+  // ✅ GET RETAILER LOCATION FROM DB
+const retailer = await User.findById(notes.retailerId);
+
+if (!retailer) {
+  console.log("❌ Retailer not found");
+  return res.json({ success: false });
+}
+
+if (!retailer.location) {
+  console.log("❌ Retailer location not found");
+  return res.json({ success: false });
+}
+
+// ================= COIN DEDUCT =================
+
+const coinUsed = Number(notes.coinUsed || 0);
+
+if (notes.useCoins === true || notes.useCoins === "true") {
+
+  if (coinUsed > 0) {
+
+    const deductCoins = Math.min(retailer.coins || 0, coinUsed);
+
+    retailer.coins -= deductCoins;
+
+    await retailer.save();
+
+    await CoinHistory.create({
+
+      userId: retailer._id,
+
+      amount: -deductCoins,
+
+      reason: "Used In Order"
+
+    });
+
+    console.log(`🪙 ${deductCoins} Coins Deducted`);
+
   }
 
-  const retailerLocation = retailer.location;
+}
+
+// ================= LOCATION =================
+
+const retailerLocation = retailer.location;
 
   for (const p of products) {
 
