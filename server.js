@@ -71,11 +71,47 @@ locationMeta: {
 },
 vehicle: String,
 vehicle_model: String,
-vehicle_number: String
+vehicle_number: String,
+coins: {
+  type: Number,
+  default: 100
+},
+
+// ✅ Referral Code
+referralCode: {
+  type: String,
+  unique: true
+},
+
+// ✅ Kis referral se signup hua
+referredBy: {
+  type: String,
+  default: ""
+}
+
 }, { timestamps: true });
 
-const User = mongoose.model("User", userSchema);
 
+const User = mongoose.model("User", userSchema);
+const mongoose = require("mongoose");
+
+const coinHistorySchema = new mongoose.Schema({
+
+  userId: String,
+
+  amount: Number,
+
+  reason: String,
+
+  createdAt:{
+    type:Date,
+    default:Date.now
+  }
+
+});
+
+module.exports =
+mongoose.model("CoinHistory", coinHistorySchema);
 /* ================= PRODUCT ================= */
 const productSchema = new mongoose.Schema({
   wholesalerId: {
