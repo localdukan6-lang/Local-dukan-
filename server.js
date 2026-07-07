@@ -979,13 +979,14 @@ app.post("/api/signup", async (req, res) => {
     });
 
     // Signup Bonus History
-    if (typeof CoinHistory !== "undefined") {
-      await CoinHistory.create({
-        userId: user._id,
-        amount: 100,
-        reason: "Signup Bonus"
-      });
-    }
+    // Signup Bonus History
+await CoinHistory.create({
+  userId: user._id,
+  amount: 100,
+  reason: "Signup Bonus"
+});
+
+console.log("✅ Coin History Saved");
 
     // Referral Reward
     if (referredBy) {
