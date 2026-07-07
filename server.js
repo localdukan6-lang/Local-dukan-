@@ -93,8 +93,6 @@ referredBy: {
 
 
 const User = mongoose.model("User", userSchema);
-const mongoose = require("mongoose");
-
 const coinHistorySchema = new mongoose.Schema({
 
   userId: String,
@@ -103,15 +101,14 @@ const coinHistorySchema = new mongoose.Schema({
 
   reason: String,
 
-  createdAt:{
-    type:Date,
-    default:Date.now
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 
 });
 
-module.exports =
-mongoose.model("CoinHistory", coinHistorySchema);
+const CoinHistory = mongoose.model("CoinHistory", coinHistorySchema);
 /* ================= PRODUCT ================= */
 const productSchema = new mongoose.Schema({
   wholesalerId: {
@@ -1404,7 +1401,18 @@ app.get("/api/categories", async (req, res) => {
 
   }
 });
+app.get("/api/coins/history/:id", async (req, res) => {
 
+  const history = await CoinHistory.find({
+    userId: req.params.id
+  }).sort({ createdAt: -1 });
+
+  res.json({
+    success: true,
+    history
+  });
+
+});
 // UPDATE PRODUCT
 // ✅ UPDATE PRODUCT (FINAL – MULTIPLE IMAGE SUPPORT)
 app.put("/api/products/:id", async (req, res) => {
