@@ -776,6 +776,49 @@ function checkLocationLock(meta) {
 
   return { locked: expired };
 }
+function copyReferral() {
+  const code = document.getElementById("referralCode").innerText;
+  navigator.clipboard.writeText(code);
+  alert("Referral Code Copied");
+}
+
+function shareReferral() {
+  const code = document.getElementById("referralCode").innerText;
+
+  const text =
+`Join Local Dukan and get 100 Coins.
+Use my referral code: ${code}`;
+
+  if (navigator.share) {
+    navigator.share({
+      title: "Local Dukan",
+      text
+    });
+  } else {
+    navigator.clipboard.writeText(text);
+    alert("Referral copied");
+  }
+}
+async function openCoinHistory() {
+  document.getElementById("coinHistoryModal").style.display = "flex";
+
+  const id = localStorage.getItem("userId");
+
+  const res = await fetch(`${API}/api/coins/history/${id}`);
+  const data = await res.json();
+
+  document.getElementById("coinHistoryBody").innerHTML =
+    data.history.map(h => `
+      <div class="history-item">
+        <b>${h.amount > 0 ? "+" : ""}${h.amount} Coins</b><br>
+        ${h.reason}
+      </div>
+    `).join("");
+}
+
+function closeCoinHistory() {
+  document.getElementById("coinHistoryModal").style.display = "none";
+}
 
 app.post("/api/delivery/calculate", async (req, res) => {
   try {
