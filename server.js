@@ -190,7 +190,27 @@ deliveryCodeTime: Date,
 
 description: String,
 status: { type: String, default: "paid" },
-statusHistory: [{ status: String, time: Number }]
+statusHistory: [{ status: String, time: Number }],
+coinsUsed: {
+    type: Number,
+    default: 0
+  },
+
+  coinDiscount: {
+    type: Number,
+    default: 0
+  },
+
+  payableAmount: {
+    type: Number,
+    default: 0
+  },
+
+  deliveryAddress: {
+    type: String,
+    default: ""
+  }
+
 }, { timestamps: true });
 
 const Order = mongoose.model("Order", orderSchema);
