@@ -1052,32 +1052,91 @@ app.post("/api/signup", async (req, res) => {
   }
 
 });
-
 app.post("/api/login", async (req, res) => {
-  const { mobile, password, role, fcmToken } = req.body; // fcmToken bhi send karo login me
-  const user = await User.findOne({ mobile, role });
-  if (!user) return res.json({ success: false });
 
-  const ok = await bcrypt.compare(password, user.password);
-  if (!ok) return res.json({ success: false });
+  try {
 
-  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const { mobile, password, role, fcmToken } = req.body;
 
-  console.log("Login userId:", user._id);
-  
-  // Agar FCM token bhi login me mil raha hai, turant save kar do
-  if (fcmToken) {
-  await User.findByIdAndUpdate(
-    user._id,
-    { fcmToken },
-    { new: true }
-  );
-  console.log("✅ FCM token saved in User collection");
-}
+    const user = await User.findOne({ mobile, role });
 
-  res.json({ success: true, token, userId: user._id });
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const ok = await bcrypt.compare(password, user.password);
+
+    if (!ok) {
+      return res.json({
+        success: false,
+        message: "Invalid password"
+      });
+    }
+
+    // ✅ Save FCM Token
+    if (fcmToken) {
+
+      user.fcmToken = fcmToken;
+
+      await user.save();
+
+      console.log("✅ FCM token saved");
+
+    }
+
+    const token = jwt.sign(
+
+      {
+        id: user._id,
+        role: user.role
+      },
+
+      process.env.JWT_SECRET,
+
+      {
+        expiresIn: "7d"
+      }
+
+    );
+
+    res.json({
+
+      success: true,
+
+      token,
+
+      userId: user._id,
+
+      role: user.role,
+
+      name: user.name,
+
+      mobile: user.mobile,
+
+      coins: user.coins,
+
+      referralCode: user.referralCode
+
+    });
+
+  } catch (err) {
+
+    console.error("Login Error:", err);
+
+    res.status(500).json({
+
+      success: false,
+
+      message: "Server Error"
+
+    });
+
+  }
+
 });
-
 
 
 app.post("/api/notifications/saveToken", async (req, res) => {
