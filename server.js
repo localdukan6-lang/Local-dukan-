@@ -1083,13 +1083,24 @@ app.get("/api/cart/:retailerId", (req,res)=>{
 app.get("/api/products/all", async (req, res) => {
   try {
 
-    const page = parseInt(req.query.page) || 1;
+    const page = Number(req.query.page) || 1;
     const limit = 12;
 
-    const products = await Product.find()
+    const products = await Product.find(
+      {},
+      {
+        productName: 1,
+        price: 1,
+        images: 1,
+        category: 1,
+        shopName: 1,
+        createdAt: 1
+      }
+    )
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
     const total = await Product.countDocuments();
 
@@ -1097,12 +1108,11 @@ app.get("/api/products/all", async (req, res) => {
       success: true,
       products,
       page,
-      total,
       hasMore: page * limit < total
     });
 
   } catch (err) {
-    console.error("All Products Error:", err);
+    console.error(err);
 
     res.status(500).json({
       success: false,
@@ -1110,7 +1120,6 @@ app.get("/api/products/all", async (req, res) => {
     });
   }
 });
-
 
 app.get("/api/products/by-category/:category", async (req, res) => {
   try {
