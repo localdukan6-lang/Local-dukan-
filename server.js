@@ -804,7 +804,8 @@ function calculateDeliveryCharge({
   distanceKm,
   timeMinutes
 }) {
-
+    vehicleType = vehicleType || "two_wheeler";
+  
   // ❌ Minimum order
   if (orderAmount < 1) {
     return { error: "Minimum order ₹100 required" };
