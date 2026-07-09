@@ -339,31 +339,33 @@ if (!retailer.location) {
 
 // ================= COIN DEDUCT =================
 
+// ================= COIN DEDUCT =================
+
 const coinUsed = Number(notes.coinUsed || 0);
 
 if (notes.useCoins === true || notes.useCoins === "true") {
 
-  if (coinUsed > 0) {
+    if (coinUsed > 0) {
 
-    const deductCoins = Math.min(retailer.coins || 0, coinUsed);
+        const deductCoins = Math.min(retailer.coins || 0, coinUsed);
 
-    retailer.coins -= deductCoins;
+        retailer.coins -= deductCoins;
 
-    await retailer.save();
+        await retailer.save();
 
-    await CoinHistory.create({
+        await CoinHistory.create({
 
-      userId: retailer._id,
+            userId: retailer._id,
 
-      amount: -deductCoins,
+            amount: -deductCoins,
 
-      reason: "Used In Order"
+            reason: "Used In Direct Order"
 
-    });
+        });
 
-    console.log(`🪙 ${deductCoins} Coins Deducted`);
+        console.log(`🪙 ${deductCoins} Coins Deducted`);
 
-  }
+    }
 
 }
 
@@ -2003,63 +2005,164 @@ app.get("/api/retailers/profile/:id", async (req, res) => {
 
 });
 
+app.post("/api/orders/pay-with-coins", async (req, res) => {
 
-/* ================= PAYMENT ================= */
-app.post("/api/orders/pay-and-create", async (req, res) => {
   try {
 
-    const { amount, notes } = req.body;
+    const {
 
-    const razorpayOrder = await razorpay.orders.create({
+      retailerId,
+      productId,
+      wholesalerId,
 
-      amount: Math.round(Number(amount) * 100),
+      deliveryCharge = 0,
+      retailerDeliveryPay = 0,
+      wholesalerDeliveryPay = 0,
 
-      currency: "INR",
+      vehicleType = "",
 
-      receipt: "rcpt_" + Date.now(),
+      address = "",
 
-      notes: {
+      useCoins = true
 
-        // ================= ORDER TYPE =================
-        type: notes.type || "direct",
+    } = req.body;
 
-        // ================= PRODUCT =================
-        productId: notes.productId || "",
-        products: notes.products || "",
+    const retailer = await User.findById(retailerId);
+    const wholesaler = await User.findById(wholesalerId);
+    const product = await Product.findById(productId);
 
-        // ================= WHOLESALER =================
-        wholesalerId: notes.wholesalerId || "",
-        wholesalerName: notes.wholesalerName || "",
-        wholesalerMobile: notes.wholesalerMobile || "",
-        wholesalerLocation: notes.wholesalerLocation || "",
+    if (!retailer || !wholesaler || !product) {
 
-        // ================= RETAILER =================
-        retailerId: notes.retailerId || "",
-        retailerName: notes.retailerName || "",
-        retailerMobile: notes.retailerMobile || "",
-        retailerLocation: notes.retailerLocation || "",
+      return res.json({
+        success: false,
+        message: "Data not found"
+      });
 
-        // ================= ADDRESS =================
-        address: notes.address || "",
+    }
 
-        // ================= COINS =================
-        useCoins: notes.useCoins || false,
-        coinUsed: Number(notes.coinUsed || 0),
+    const productPrice = Number(product.price || 0);
 
-        // ================= DELIVERY =================
-        vehicleType: notes.vehicleType || "",
+    const totalAmount =
+      productPrice + Number(retailerDeliveryPay);
 
-        deliveryCharge: Number(notes.deliveryCharge || 0),
+    if (!useCoins) {
 
-        retailerDeliveryPay: Number(notes.retailerDeliveryPay || 0),
+      return res.json({
+        success: false,
+        message: "Coins not enabled"
+      });
 
-        wholesalerDeliveryPay: Number(notes.wholesalerDeliveryPay || 0),
+    }
 
-        distanceKm: Number(notes.distanceKm || 0),
+    if ((retailer.coins || 0) < totalAmount) {
 
-        timeMinutes: Number(notes.timeMinutes || 0)
+      return res.json({
 
-      }
+        success: false,
+
+        insufficientCoins: true,
+
+        remainingAmount:
+          totalAmount - (retailer.coins || 0),
+
+        message: "Insufficient Coins"
+
+      });
+
+    }
+
+    // ================= DEDUCT COINS =================
+
+    retailer.coins -= totalAmount;
+
+    await retailer.save();
+
+    await CoinHistory.create({
+
+      userId: retailer._id,
+
+      amount: -totalAmount,
+
+      reason: "Product Purchase"
+
+    });
+
+    // ================= CREATE ORDER =================
+
+    const order = await Order.create({
+
+      paymentId: "COIN_" + Date.now(),
+
+      paymentMethod: "coins",
+
+      isCartOrder: false,
+
+      productId: product._id,
+
+      productName: product.productName,
+
+      productImg: product.images?.[0] || "",
+
+      price: productPrice,
+
+      quantity: 1,
+
+      wholesalerId: wholesaler._id,
+
+      wholesalerName:
+        wholesaler.shopName || wholesaler.name,
+
+      wholesalerMobile:
+        wholesaler.mobile,
+
+      wholesalerLocation:
+        wholesaler.location || null,
+
+      retailerId: retailer._id,
+
+      retailerName:
+        retailer.name,
+
+      retailerMobile:
+        retailer.mobile,
+
+      retailerLocation:
+        retailer.location || null,
+
+      vehicleType,
+
+      deliveryCharge:
+        Number(deliveryCharge),
+
+      retailerDeliveryPay:
+        Number(retailerDeliveryPay),
+
+      wholesalerDeliveryPay:
+        Number(wholesalerDeliveryPay),
+
+      totalAmount,
+
+      coinsUsed: totalAmount,
+
+      coinDiscount: totalAmount,
+
+      payableAmount: 0,
+
+      deliveryAddress: address,
+
+      status: "paid",
+
+      statusHistory: [
+
+        {
+
+          status: "paid",
+
+          time: Date.now()
+
+        }
+
+      ]
 
     });
 
@@ -2067,17 +2170,178 @@ app.post("/api/orders/pay-and-create", async (req, res) => {
 
       success: true,
 
+      coinPayment: true,
+
+      orderId: order._id,
+
+      remainingCoins:
+        retailer.coins
+
+    });
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+
+      success: false,
+
+      message: "Coin Payment Failed"
+
+    });
+
+  }
+
+});
+/* ================= PAYMENT ================= */
+app.post("/api/orders/pay-and-create", async (req, res) => {
+
+  try {
+
+    const { amount, notes } = req.body;
+
+    const user = await User.findById(notes.retailerId);
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "Retailer not found"
+      });
+    }
+
+    let walletCoins = Number(user.coins || 0);
+
+    let totalAmount = Number(amount);
+
+    let coinUsed = 0;
+
+    /* ================= USE COINS ================= */
+
+    if (notes.useCoins) {
+
+      coinUsed = Math.min(walletCoins, totalAmount);
+
+      totalAmount = totalAmount - coinUsed;
+
+    }
+
+    /* ================= FULL COIN PAYMENT ================= */
+
+    if (totalAmount <= 0) {
+
+      if (coinUsed > 0) {
+
+        user.coins -= coinUsed;
+
+        await user.save();
+
+        await CoinHistory.create({
+
+          userId: user._id,
+
+          amount: -coinUsed,
+
+          reason: "Product Purchase"
+
+        });
+
+      }
+
+      return res.json({
+
+        success: true,
+
+        payWithCoins: true,
+
+        coinUsed,
+
+        remainingCoins: user.coins
+
+      });
+
+    }
+
+    /* ================= PARTIAL COIN ================= */
+
+    const razorpayOrder =
+      await razorpay.orders.create({
+
+        amount: Math.round(totalAmount * 100),
+
+        currency: "INR",
+
+        receipt: "rcpt_" + Date.now(),
+
+        notes: {
+
+          type: notes.type || "direct",
+
+          productId: notes.productId || "",
+
+          products: notes.products || "",
+
+          wholesalerId: notes.wholesalerId || "",
+
+          wholesalerName: notes.wholesalerName || "",
+
+          wholesalerMobile: notes.wholesalerMobile || "",
+
+          wholesalerLocation: notes.wholesalerLocation || "",
+
+          retailerId: notes.retailerId || "",
+
+          retailerName: notes.retailerName || "",
+
+          retailerMobile: notes.retailerMobile || "",
+
+          retailerLocation: notes.retailerLocation || "",
+
+          address: notes.address || "",
+
+          useCoins: notes.useCoins || false,
+
+          coinUsed,
+
+          vehicleType: notes.vehicleType || "",
+
+          deliveryCharge: Number(notes.deliveryCharge || 0),
+
+          retailerDeliveryPay: Number(notes.retailerDeliveryPay || 0),
+
+          wholesalerDeliveryPay: Number(notes.wholesalerDeliveryPay || 0),
+
+          distanceKm: Number(notes.distanceKm || 0),
+
+          timeMinutes: Number(notes.timeMinutes || 0)
+
+        }
+
+      });
+
+    res.json({
+
+      success: true,
+
+      payWithCoins: false,
+
       key: process.env.RAZORPAY_KEY_ID,
 
       orderId: razorpayOrder.id,
 
-      amount: razorpayOrder.amount
+      amount: razorpayOrder.amount,
+
+      coinUsed
 
     });
 
-  } catch (err) {
+  }
 
-    console.error("❌ Pay create error:", err);
+  catch (err) {
+
+    console.error(err);
 
     res.status(500).json({
 
@@ -2088,6 +2352,7 @@ app.post("/api/orders/pay-and-create", async (req, res) => {
     });
 
   }
+
 });
 
 
