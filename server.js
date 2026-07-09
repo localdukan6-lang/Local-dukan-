@@ -1275,7 +1275,53 @@ app.post("/api/coins/add", async (req, res) => {
 
   }
 });
+app.post("/api/admin/search-user", async (req, res) => {
 
+  try {
+
+    const { mobile } = req.body;
+
+    if (!mobile) {
+      return res.json({
+        success: false,
+        message: "Mobile number required"
+      });
+    }
+
+    const user = await User.findOne({ mobile });
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        userId: user._id,
+        name: user.name,
+        mobile: user.mobile,
+        role: user.role,
+        coins: user.coins || 0,
+        address: user.shop_current_location || "",
+        location: user.location || null
+      }
+    });
+
+  } catch (err) {
+
+    console.error("Search User Error:", err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error"
+    });
+
+  }
+
+});
 app.post("/api/notifications/saveToken", async (req, res) => {
 try {
 const { userId, fcmToken } = req.body;
