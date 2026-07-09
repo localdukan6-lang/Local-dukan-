@@ -562,7 +562,7 @@ else if (notes.type === "direct") {
                 },
                 webpush: {
                   fcmOptions: {
-                    link: "https://bazaarsathi.vercel.app/wholesaler.html"
+                    link: "https://webnestic-tech-up.vercel.app/wholesaler.html"
                   }
                 },
                 data: {
