@@ -1236,7 +1236,45 @@ app.post("/api/login", async (req, res) => {
   }
 
 });
+app.post("/api/coins/add", async (req, res) => {
+  try {
 
+    const { userId, coins, reason } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    user.coins = Number(user.coins || 0) + Number(coins);
+
+    await user.save();
+
+    await CoinHistory.create({
+      userId,
+      amount: Number(coins),
+      reason: reason || "Admin Added Coins"
+    });
+
+    res.json({
+      success: true,
+      totalCoins: user.coins
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+});
 
 app.post("/api/notifications/saveToken", async (req, res) => {
 try {
