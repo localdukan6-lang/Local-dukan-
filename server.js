@@ -1068,7 +1068,7 @@ app.post("/api/signup", async (req, res) => {
 
       vehicle_number: req.body.vehicle_number || "",
 
-      coins: 100,
+      coins: 1,
 
       referralCode,
 
@@ -1080,7 +1080,7 @@ app.post("/api/signup", async (req, res) => {
     // Signup Bonus History
 await CoinHistory.create({
   userId: user._id,
-  amount: 100,
+  amount: 1,
   reason: "Signup Bonus"
 });
 
