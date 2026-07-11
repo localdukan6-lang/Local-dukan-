@@ -1095,23 +1095,23 @@ console.log("✅ Coin History Saved");
 
       if (inviter) {
 
-        inviter.coins += 100;
+        inviter.coins += 1;
         await inviter.save();
 
-        user.coins += 100;
+        user.coins += 1;
         await user.save();
 
         if (typeof CoinHistory !== "undefined") {
 
           await CoinHistory.create({
             userId: inviter._id,
-            amount: 100,
+            amount: 1,
             reason: "Referral Reward"
           });
 
           await CoinHistory.create({
             userId: user._id,
-            amount: 100,
+            amount: 1,
             reason: "Referral Signup"
           });
 
