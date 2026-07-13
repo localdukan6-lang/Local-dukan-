@@ -125,7 +125,10 @@ const productSchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
-
+  productUrl: {
+  type: String,
+  default: ""
+},
   price: Number,
   detail: String,
   images: [String],
@@ -1575,7 +1578,8 @@ if (!category) category = "other";
 
 const product = await Product.create({  
   ...req.body,  
-  category: category.toLowerCase().trim()  
+  category: category.toLowerCase().trim(),
+  productUrl: req.body.productUrl || ""
 });  
 
 res.json({ success: true, product });
