@@ -2361,48 +2361,48 @@ app.post("/api/orders/pay-and-create", async (req, res) => {
 
         notes: {
 
-          type: notes.type || "direct",
+  type: notes.type || "direct",
 
-          productId: notes.productId || "",
+  productId: notes.productId || "",
 
-          products: notes.products || "",
+  products: notes.products || "",
 
-          wholesalerId: notes.wholesalerId || "",
+  wholesalerId: notes.wholesalerId || "",
 
-          wholesalerName: notes.wholesalerName || "",
+  wholesalerName: notes.wholesalerName || "",
 
-          wholesalerMobile: notes.wholesalerMobile || "",
+  wholesalerMobile: notes.wholesalerMobile || "",
 
-          wholesalerLocation: notes.wholesalerLocation || "",
+  wholesalerLocation: JSON.stringify(notes.wholesalerLocation || {}),
 
-          retailerId: notes.retailerId || "",
+  retailerId: notes.retailerId || "",
 
-          retailerName: notes.retailerName || "",
+  retailerName: notes.retailerName || "",
 
-          retailerMobile: notes.retailerMobile || "",
+  retailerMobile: notes.retailerMobile || "",
 
-          retailerLocation: notes.retailerLocation || "",
+  retailerLocation: JSON.stringify(notes.retailerLocation || {}),
 
-          address: notes.address || "",
+  address: notes.address || "",
+  deliveryAddress: notes.deliveryAddress || "",
 
-          useCoins: notes.useCoins || false,
+  useCoins: notes.useCoins || false,
 
-          coinUsed,
+  coinUsed,
 
-          vehicleType: notes.vehicleType || "",
+  vehicleType: notes.vehicleType || "",
 
-          deliveryCharge: Number(notes.deliveryCharge || 0),
+  deliveryCharge: Number(notes.deliveryCharge || 0),
 
-          retailerDeliveryPay: Number(notes.retailerDeliveryPay || 0),
+  retailerDeliveryPay: Number(notes.retailerDeliveryPay || 0),
 
-          wholesalerDeliveryPay: Number(notes.wholesalerDeliveryPay || 0),
+  wholesalerDeliveryPay: Number(notes.wholesalerDeliveryPay || 0),
 
-          distanceKm: Number(notes.distanceKm || 0),
+  distanceKm: Number(notes.distanceKm || 0),
 
-          timeMinutes: Number(notes.timeMinutes || 0)
+  timeMinutes: Number(notes.timeMinutes || 0)
 
-        }
-
+}
       });
 
     res.json({
