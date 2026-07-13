@@ -435,8 +435,7 @@ const retailerLocation = retailer.location;
   payableAmount:
     (itemTotal + safeNumber(notes.retailerDeliveryPay)) - coinUsed,
 
-  deliveryAddress:
-    notes.address || "",
+  deliveryAddress: notes.deliveryAddress || notes.address || "",
 
   status: "paid",
 
@@ -521,8 +520,7 @@ else if (notes.type === "direct") {
   payableAmount:
     (price + deliveryPay) - coinUsed,
 
-  deliveryAddress:
-    notes.address || "",
+  deliveryAddress: notes.deliveryAddress || notes.address || "",
 
   status: "paid",
 
