@@ -1492,7 +1492,8 @@ app.get("/api/products/all", async (req, res) => {
         images: 1,
         category: 1,
         shopName: 1,
-        createdAt: 1
+        createdAt: 1,
+        productUrl: 1
       }
     )
       .sort({ createdAt: -1 })
