@@ -820,8 +820,8 @@ function calculateDeliveryCharge({
   const otherCharge = 1;
 
   if (vehicleType === "two_wheeler") {
-    perKm = 2;
-    perMin = 2.25;
+    perKm = 0;
+    perMin = 0;
   }
   if (vehicleType === "three_wheeler") {
     perKm = 3.3;
