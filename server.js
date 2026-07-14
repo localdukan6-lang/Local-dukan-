@@ -1152,6 +1152,32 @@ console.log("✅ Coin History Saved");
   }
 
 });
+app.get("/api/admin/retailers", async (req, res) => {
+  try {
+
+    const users = await User.find(
+      { role: "retailer" },
+      {
+        password: 0,
+        __v: 0
+      }
+    ).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      users
+    });
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+});
 app.post("/api/login", async (req, res) => {
 
   try {
